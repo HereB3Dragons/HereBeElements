@@ -1,0 +1,36 @@
+{
+    "name": "Unity.HereBeElements",
+    "references": [
+        "com.herebedragons.herebeelements.Runtime"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": true,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [
+        {
+            "name": "com.unity.modules.ui",
+            "expression": "",
+            "define": "1.0.0"
+        },
+        {
+            "name": "com.unity.modules.animation",
+            "expression": "",
+            "define": "1.0.0"
+        },
+        {
+            "name": "com.unity.render-pipelines.universal",
+            "expression": "",
+            "define": "7.3.1"
+        },
+        {
+            "name": "com.unity.shadergraph",
+            "expression": "",
+            "define": "7.3.1"
+        }
+    ],
+    "noEngineReferences": false
+}

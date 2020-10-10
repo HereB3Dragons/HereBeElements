@@ -1,0 +1,28 @@
+{
+    "name": "Unity.HereBeElements.Editor",
+    "references": [
+        "Unity.HereBeElements"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [
+        {
+            "name": "com.unity.modules.ui",
+            "expression": "",
+            "define": "1.0.0"
+        },
+        {
+            "name": "com.unity.modules.animation",
+            "expression": "",
+            "define": "1.0.0"
+        }
+    ],
+    "noEngineReferences": false
+}

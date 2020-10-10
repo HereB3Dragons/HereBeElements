@@ -1,0 +1,19 @@
+{
+  "name": "com.herebedragons.herebeelements",
+  "version": "1.0.0",
+  "displayName": "HereBeElements",
+  "description": "Wraps most usually required UI (Selectable) logic into a common API, sharing it with non UI Elements and provides base shaders for the most common needs",
+  "unity": "2019.4",
+  "unityRelease": "11f1",
+  "keywords": [
+    "UI",
+    "Elements",
+    "Border"
+  ],
+  "author": {
+    "name": "Tiago",
+    "email": "herebdragons@protonmail.com",
+    "url": "https://www.unity3d.com"
+  },
+  "type": "library"
+}

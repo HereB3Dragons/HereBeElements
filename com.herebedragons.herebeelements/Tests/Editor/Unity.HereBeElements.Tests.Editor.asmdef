@@ -1,0 +1,12 @@
+{
+  "name": "Unity.HereBeElements.Tests.Editor",
+  "references": [
+    "com.herebedragon.herebeelements.Editor"
+  ],
+  "optionalUnityReferences": [
+  ],
+  "includePlatforms": [
+    "Editor"
+  ],
+  "excludePlatforms": []
+}

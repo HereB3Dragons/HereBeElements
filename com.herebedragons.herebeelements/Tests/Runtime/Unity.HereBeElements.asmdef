@@ -1,0 +1,12 @@
+{
+  "name": "Unity.HereBeElements.Tests.Runtime",
+  "references": [
+    "com.herebedragons.herebeelements.Runtime",
+    "MyPackage"
+  ],
+  "optionalUnityReferences": [
+  ],
+  "includePlatforms": [
+  ],
+  "excludePlatforms": []
+}
