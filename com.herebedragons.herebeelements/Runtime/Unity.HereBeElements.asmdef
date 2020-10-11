@@ -1,8 +1,5 @@
 {
     "name": "Unity.HereBeElements",
-    "references": [
-        "com.herebedragons.herebeelements.Runtime"
-    ],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
