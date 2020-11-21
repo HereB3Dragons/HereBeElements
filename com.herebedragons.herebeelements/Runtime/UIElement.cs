@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Collections;
 using com.herebedragons.herebeelements.Runtime.Templates;
 using HereBeElements.Components;
 using Internal;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
@@ -111,6 +113,8 @@ public class UIElement : UISelectable, IPointerClickHandler, IElement
 
     public Graphic GetGraphic()
     {
+        if (_graphic == null)
+            _graphic = GetComponent<Graphic>();
         return _graphic;
     }
 
@@ -219,5 +223,10 @@ public class UIElement : UISelectable, IPointerClickHandler, IElement
             UISystemProfilerApi.AddMarker("UIElement.onMouseLeave", this);
             mouseLeave();
         }
+    }
+
+    public IEnumerator LoadContent<T>(AssetReference assetRef, Action<T> setter, Action<float> percentageSetter = null)
+    {
+        throw new NotImplementedException();
     }
 }

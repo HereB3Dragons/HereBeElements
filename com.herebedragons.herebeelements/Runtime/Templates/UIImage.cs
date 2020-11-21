@@ -1,17 +1,21 @@
 ﻿using System;
+using System.Collections;
 using HereBeElements.Components;
 using Internal;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 using UnityEngine.UI;
 
 namespace com.herebedragons.herebeelements.Runtime.Templates
 {
     [RequireComponent(typeof(ShaderControl))]
-    public class UIImage : Image
+    public class UIImage : Image, ILoadable
     {
         [NonSerialized]
         private readonly TweenRunner<ColorTween> m_ColorTweenRunner;
 
+        public AssetReference imageAssetReference;
+        
         private ShaderControl _sc;
 
         protected UIImage()
@@ -25,6 +29,8 @@ namespace com.herebedragons.herebeelements.Runtime.Templates
         {
             base.Awake();
             _sc = GetComponent<ShaderControl>();
+            if (imageAssetReference != null)
+                LoadContent<Material>(imageAssetReference, res => this.material = res);
         }
 
         public override void CrossFadeColor(Color targetColor, float duration, bool ignoreTimeScale, bool useAlpha, bool useRGB)
@@ -48,6 +54,11 @@ namespace com.herebedragons.herebeelements.Runtime.Templates
             colorTween.ignoreTimeScale = ignoreTimeScale;
             colorTween.tweenMode = mode;
             m_ColorTweenRunner.StartTween(colorTween);
+        }
+
+        public IEnumerator LoadContent<T>(AssetReference assetRef, Action<T> setter, Action<float> percentageSetter = null)
+        {
+            return Utils.LoadContent(assetRef, setter, percentageSetter);
         }
     }
 }

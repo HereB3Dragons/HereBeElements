@@ -1,7 +1,8 @@
 {
     "name": "Unity.HereBeElements.Editor",
     "references": [
-        "Unity.HereBeElements"
+        "Unity.HereBeElements",
+        "Unity.Addressables"
     ],
     "includePlatforms": [
         "Editor"

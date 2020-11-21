@@ -1,5 +1,6 @@
 ﻿using System;
 using com.herebedragons.herebeelements.Runtime.Templates;
+using JetBrains.Annotations;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -83,6 +84,7 @@ namespace HereBeElements.Components
 #if UNITY_EDITOR
         private void OnValidate()
         {
+            IElement parent = GetComponent<IElement>();
             if (_owner == null) _owner = GetComponent<UIElement>();
             if ( _owner != null && _owner.GetGraphic() != null)
                 ApplyConfig(_owner.GetGraphic());

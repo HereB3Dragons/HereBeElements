@@ -1,23 +1,26 @@
 ﻿using System;
+using System.Collections;
 using com.herebedragons.herebeelements.Runtime.Templates;
 using HereBeElements.Components;
+using Internal;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 using UnityEngine.EventSystems;
 
 [Serializable]
 [RequireComponent(typeof(ShaderControl))]
-public class Element: MonoBehaviour, IElement
+public class Element: InGameSelectable, IElement
 {
     private bool _isVisible = true;
     private bool _isHighlight = false;
 
-    protected ShaderControl _sc;
     protected Renderer _renderer;
 
-    private void Awake()
+    protected override void Awake()
     {
-        _sc = GetComponent<ShaderControl>();
+        base.Awake();
         _renderer = GetComponent<Renderer>();
+        ApplyShaderConfig();
     }
 
     public bool IsVisible()
@@ -38,22 +41,23 @@ public class Element: MonoBehaviour, IElement
 
     public bool IsEnabled()
     {
-        throw new NotImplementedException();
+        return true; //throw new NotImplementedException();
     }
 
     public void Enable(bool onOff = true)
     {
-        throw new NotImplementedException();
+        //throw new NotImplementedException();
     }
 
     public void Disable()
     {
-        throw new NotImplementedException();
+        //throw new NotImplementedException();
     }
 
     public bool IsHighlight()
     {
-        throw new NotImplementedException();
+        //throw new NotImplementedException();
+        return false;
     }
 
     public void Highlight(bool onOff = true)
@@ -84,18 +88,38 @@ public class Element: MonoBehaviour, IElement
     {
         Highlight(false);
     }
+    
+#if UNITY_EDITOR
+    protected override void OnValidate()
+    { 
+        base.OnValidate();
+#else
+        protected virtual void OnValidate()
+        {
+#endif
+        ApplyShaderConfig(); 
+    }
 
     public void ApplyShaderConfig()
     {
-        if (_renderer != null)
-            _sc.ApplyConfig(_renderer);
+        Renderer r = GetGraphic();
+        if (r != null)
+            _sc.ApplyConfig(r);
     }
-    
+
+    public Renderer GetGraphic()
+    {
+        if (_renderer == null)
+            _renderer = GetComponent<Renderer>();
+        return _renderer; 
+    }
+
     public delegate void EnableEventHandler();
     public event EnableEventHandler EnableEvent;
 
-    protected void OnEnable()
+    protected override void OnEnable()
     {
+        base.OnEnable();
         EnableEventHandler enable = EnableEvent;
         if (enable != null)
         {
@@ -107,8 +131,9 @@ public class Element: MonoBehaviour, IElement
     public delegate void DisableEventHandler();
     public event DisableEventHandler DisableEvent;
     
-    protected  void OnDisable()
+    protected override void OnDisable()
     {
+        base.OnDisable();
         DisableEventHandler disable = DisableEvent;
         if (disable != null)
         {
@@ -126,8 +151,9 @@ public class Element: MonoBehaviour, IElement
     public delegate void SelectEventHandler();
     public event SelectEventHandler SelectEvent;
 
-    public void OnSelect(BaseEventData eventData)
+    public override void OnSelect(BaseEventData eventData)
     {
+        base.OnSelect(eventData);
         SelectEventHandler select = SelectEvent;
         if (select != null)
         {
@@ -139,8 +165,9 @@ public class Element: MonoBehaviour, IElement
     public delegate void DeselectEventHandler();
     public event DeselectEventHandler DeselectEvent;
     
-    public void OnDeselect(BaseEventData eventData)
+    public override void OnDeselect(BaseEventData eventData)
     {
+        base.OnDeselect(eventData);
         DeselectEventHandler deselect = DeselectEvent;
         if (deselect != null)
         {
@@ -171,8 +198,9 @@ public class Element: MonoBehaviour, IElement
         }
     }
 
-    protected virtual void OnPointerEnter(PointerEventData eventData)
+    public override void OnPointerEnter(PointerEventData eventData)
     {
+        base.OnPointerEnter(eventData);
         MouseEnterEventHandler mouseEnter = MouseEnterEvent;
         if (mouseEnter != null)
         {
@@ -180,14 +208,20 @@ public class Element: MonoBehaviour, IElement
             mouseEnter();
         }
     }
-        
-    protected virtual void OnPointerExit(PointerEventData eventData)
+
+    public override void OnPointerExit(PointerEventData eventData)
     {
+        base.OnPointerExit(eventData);
         MouseLeaveEventHandler mouseLeave = MouseLeaveEvent;
         if (mouseLeave != null)
         {
             UISystemProfilerApi.AddMarker("UIElement.onMouseLeave", this);
             mouseLeave();
         }
+    }
+
+    public IEnumerator LoadContent<T>(AssetReference assetRef, Action<T> setter, Action<float> percentageSetter = null)
+    {
+        return Utils.LoadContent(assetRef, setter, percentageSetter);
     }
 }
