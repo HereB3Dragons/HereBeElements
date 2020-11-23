@@ -1,13 +1,14 @@
 ﻿using System;
-using com.herebedragons.herebeelements.Runtime.Locale;
+using HereBeElements.Locale;
 
-namespace com.herebedragons.herebeelements.Runtime.Templates
+namespace HereBeElements.Templates
 {
     [Serializable]
     public class LocalizedUIDisplay<T> : UIDisplay where T : Enum
     {
         public bool isLocalized;
         public T[] textKeys;
+        public string separator = ":";
 
         protected LocalizedUIDisplay()
         {
@@ -18,7 +19,7 @@ namespace com.herebedragons.herebeelements.Runtime.Templates
         {
             if (isLocalized)
                 text = Locale<T>.GetText(textKeys[0]);
-            base.Show(text);
+            base.Show(text + separator);
         }
 
         public override void Show(long value)
@@ -29,11 +30,17 @@ namespace com.herebedragons.herebeelements.Runtime.Templates
             base.Show(text);
         }
 
+        protected override void Awake()
+        {
+            base.Awake();
+            Show();
+        }
+
 #if UNITY_EDITOR
         protected override void OnValidate()
         {
             base.OnValidate();
-            Show();
+            Show(text);
         }
 #endif
     }

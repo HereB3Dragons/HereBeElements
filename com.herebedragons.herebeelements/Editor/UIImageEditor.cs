@@ -1,5 +1,5 @@
 ﻿using System.Linq;
-using com.herebedragons.herebeelements.Runtime.Templates;
+using HereBeElements.Templates;
 using Internal;
 using UnityEditor;
 using UnityEditor.AnimatedValues;

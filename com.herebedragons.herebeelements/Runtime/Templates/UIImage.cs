@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections;
 using HereBeElements.Components;
-using Internal;
+using HereBeElements.Internal;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.UI;
 
-namespace com.herebedragons.herebeelements.Runtime.Templates
+namespace HereBeElements.Templates
 {
     [RequireComponent(typeof(ShaderControl))]
     public class UIImage : Image, ILoadable
@@ -59,6 +59,11 @@ namespace com.herebedragons.herebeelements.Runtime.Templates
         public IEnumerator LoadContent<T>(AssetReference assetRef, Action<T> setter, Action<float> percentageSetter = null)
         {
             return Utils.LoadContent(assetRef, setter, percentageSetter);
+        }
+        
+        public void LoadAsset<T>(AssetReference assetRef, Action<T> setter)
+        {
+            Utils.LoadAsset(assetRef, setter);
         }
     }
 }

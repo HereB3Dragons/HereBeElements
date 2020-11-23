@@ -1,16 +1,13 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Runtime.Serialization.Json;
-using System.Text;
 using System.Text.RegularExpressions;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;
 
-namespace Internal
+namespace HereBeElements.Internal
 {
     public static class Utils
     {
@@ -55,21 +52,22 @@ namespace Internal
             };
         }
         
-        internal static string ToJson<T>(T data)
+        public static T[] GetComponentsInChildren<T>(this Component parent) where T : Component
         {
-            MemoryStream stream = new MemoryStream();
-
-            DataContractJsonSerializer serialiser = new DataContractJsonSerializer(
-                data.GetType(),
-                new DataContractJsonSerializerSettings()
+            List<T> tmpList = new List<T>();
+     
+            foreach (Transform transform in parent.transform)
+            {
+                T component;
+                if ((component = transform.GetComponent<T>()) != null)
                 {
-                    UseSimpleDictionaryFormat = true
-                });
-
-            serialiser.WriteObject(stream, data);
-
-            return Encoding.UTF8.GetString(stream.ToArray());
+                    tmpList.Add(component);
+                }
+            }
+     
+            return tmpList.ToArray();
         }
+
         
         internal static Dictionary<string, Dictionary<string, string>> FromJson(string data)
         {

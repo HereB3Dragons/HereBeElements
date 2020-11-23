@@ -1,6 +1,7 @@
 ﻿using System;
-using com.herebedragons.herebeelements.Runtime.Materials;
-using com.herebedragons.herebeelements.Runtime.Templates;
+using HereBeElements;
+using HereBeElements.Materials;
+using HereBeElements.Templates;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;

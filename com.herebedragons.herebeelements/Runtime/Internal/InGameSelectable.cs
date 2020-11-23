@@ -7,7 +7,7 @@ using UnityEngine.EventSystems;
 using UnityEngine.Serialization;
 using UnityEngine.UI;
 
-namespace Internal
+namespace HereBeElements.Internal
 {
     [RequireComponent(typeof(ShaderControl))]
     public class InGameSelectable : MonoBehaviour, IMoveHandler, IPointerDownHandler, IPointerUpHandler,

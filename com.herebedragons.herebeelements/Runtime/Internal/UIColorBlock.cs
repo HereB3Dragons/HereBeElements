@@ -3,7 +3,7 @@ using UnityEngine;
 using UnityEngine.Serialization;
 using UnityEngine.UI;
 
-namespace Internal
+namespace HereBeElements.Internal
 {
     [Serializable]
     /// <summary>

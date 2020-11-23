@@ -1,11 +1,9 @@
-﻿
-
-using System;
+﻿using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 
-namespace com.herebedragons.herebeelements.Runtime.Materials
+namespace HereBeElements.Materials
 {
     public static class MaterialFactory
     {

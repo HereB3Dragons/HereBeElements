@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using Object = System.Object;
 
-namespace com.herebedragons.herebeelements.Runtime.Templates
+namespace HereBeElements.Templates
 {
     [Serializable]
     public class ShaderConfig
@@ -46,29 +46,27 @@ namespace com.herebedragons.herebeelements.Runtime.Templates
         internal void ApplyConfig(Renderer renderer)
         {
             if (isStatic || renderer == null) return;
-#if !UNITY_EDITOR
-            _material = renderer.material; 
-#endif
+                //_material = renderer.material; 
             ApplyConfig();
         }
 
         internal void ApplyConfig(Graphic graphic)
         {
             if (isStatic || graphic == null) return;
-#if !UNITY_EDITOR
-            _material = graphic.material; 
-#endif
+                //_material = graphic.material; 
             ApplyConfig();
         }
 
         internal void DuplicateMaterial(Renderer renderer)
         {
-            renderer.material = new Material(renderer.material);
+            _material = new Material(renderer.material);
+            renderer.material = _material;
         }
         
         internal void DuplicateMaterial(Graphic graphic)
         {
-            graphic.material = new Material(graphic.material);
+            _material = new Material(graphic.material);
+            graphic.material = _material;
         }
 
         private void ApplyConfig()

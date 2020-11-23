@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Collections;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 using UnityEngine.UI;
 
-namespace Internal
+namespace HereBeElements.Internal
 {
     [Serializable]
     public class UISelectable : Selectable
@@ -129,6 +131,16 @@ namespace Internal
             else
 #endif
                 DoStateTransition(currentSelectionState, false);
+        }
+        
+        public IEnumerator LoadContent<T>(AssetReference assetRef, Action<T> setter, Action<float> percentageSetter = null)
+        {
+            return Utils.LoadContent(assetRef, setter, percentageSetter);
+        }
+        
+        public void LoadAsset<T>(AssetReference assetRef, Action<T> setter)
+        {
+            Utils.LoadAsset(assetRef, setter);
         }
     }
 }

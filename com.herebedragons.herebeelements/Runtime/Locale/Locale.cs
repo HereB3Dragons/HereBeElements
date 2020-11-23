@@ -3,12 +3,11 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
-using Internal;
+using HereBeElements.Internal;
 using UnityEngine;
-using Object = System.Object;
 
 
-namespace com.herebedragons.herebeelements.Runtime.Locale
+namespace HereBeElements.Locale
 {
     [Serializable]
     public class Locale<T> where T : Enum
@@ -16,7 +15,7 @@ namespace com.herebedragons.herebeelements.Runtime.Locale
         private static AvailableLocale DefaultLocale;
         private const string UNDEFINED = "UNDEFINED";
         private static CultureInfo _localeInfo;
-        private static Dictionary<string, string> _messages = new Dictionary<string, string>();
+        private static Dictionary<string, string> _messages;
 
         private static HashSet<AvailableLocale> _langs;
         
@@ -26,7 +25,7 @@ namespace com.herebedragons.herebeelements.Runtime.Locale
 
         public delegate void ChangeLocaleHandler();
         public static ChangeLocaleHandler ChangeLanguageEvent;
-
+        
         public static void RegisterLanguages(AvailableLocale[] languages)
         {
             if (languages == null)
@@ -44,12 +43,17 @@ namespace com.herebedragons.herebeelements.Runtime.Locale
         {
         }
 
-        public static Locale<T> Init(string lang)
+        public static Locale<T> Init(string lang, Dictionary<string, string> cache = null)
         {
             AvailableLocale l= StringToLocale(lang); 
             if (_instance is null)
                 _instance = new Locale<T>(l);
-        
+
+            if (cache != null)
+                _messages = cache;
+            else if (_messages is null)
+                _messages = new Dictionary<string, string>();
+            
             SetLocale(l);
             return _instance;
         }
@@ -104,13 +108,6 @@ namespace com.herebedragons.herebeelements.Runtime.Locale
         {
             if (localeTextAsset is null) return;
 
-            Dictionary<string, Dictionary<string, string>> langStrings = Utils.FromJson(localeTextAsset.text);
-            Dictionary<string, string> b = new Dictionary<string, string>();
-            
-            Dictionary<string, Dictionary<string, string>> a = new Dictionary<string, Dictionary<string, string>>();
-            b.Add("um","dois");
-            a.Add("teste", b);
-
             Dictionary<string, Dictionary<string, string>> dictFromJson = Utils.FromJson(localeTextAsset.text);
             if (dictFromJson == null || dictFromJson.Count == 0) return;
             
@@ -131,7 +128,7 @@ namespace com.herebedragons.herebeelements.Runtime.Locale
 
         private static string GetOrUndefined(string key)
         {
-            if (!_messages.ContainsKey(key))
+            if (_messages is null || !_messages.ContainsKey(key))
                 return UNDEFINED;
             return _messages[key];
         }

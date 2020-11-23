@@ -2,7 +2,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Internal
+namespace HereBeElements.Internal
 {
     [Serializable]
     public struct InGameNavigation: IEquatable<InGameNavigation>

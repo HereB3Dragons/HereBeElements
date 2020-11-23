@@ -1,6 +1,5 @@
-﻿using Internal;
-
-namespace com.herebedragons.herebeelements.Runtime.Templates
+﻿
+namespace HereBeElements.Templates
 {
     public interface IDisplay
     {

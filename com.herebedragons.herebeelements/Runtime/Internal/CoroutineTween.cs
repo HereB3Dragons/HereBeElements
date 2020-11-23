@@ -2,7 +2,7 @@
 using UnityEngine;
 using UnityEngine.Events;
 
-namespace Internal
+namespace HereBeElements.Internal
 {
     // Base interface for tweeners,
     // using an interface instead of

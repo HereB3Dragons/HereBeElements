@@ -1,5 +1,5 @@
 ﻿using System;
-using com.herebedragons.herebeelements.Runtime.Templates;
+using HereBeElements.Templates;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -94,21 +94,22 @@ namespace HereBeElements.Components
             if (_owner.GetType() == typeof(UIElement))
             {
                 Graphic el = ((UIElement) _owner).GetGraphic();
+                if (el is null) return;
                 if (!isStatic && _isStatic)
                     config.DuplicateMaterial(el);
                 
-                if (el != null)
-                    ApplyConfig(el);
+                ApplyConfig(el);
             }
             
             if (_owner.GetType() == typeof(Element))
             {
                 Renderer el = ((Element) _owner).GetGraphic();
+                if (el is null) return;
+                
                 if (!isStatic && _isStatic)
                     config.DuplicateMaterial(el);
                 
-                if (el != null)
-                    ApplyConfig(el);
+                ApplyConfig(el);
             }
 
             _isStatic = isStatic;

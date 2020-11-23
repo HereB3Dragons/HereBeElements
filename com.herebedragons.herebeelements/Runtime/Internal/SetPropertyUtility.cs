@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-namespace Internal
+namespace HereBeElements.Internal
 {
     internal static class SetPropertyUtility
     {

@@ -1,9 +1,9 @@
 ﻿using System;
-using Internal;
+using HereBeElements.Internal;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace com.herebedragons.herebeelements.Runtime.Templates
+namespace HereBeElements.Templates
 {
     [RequireComponent(typeof(Text))]
     [Serializable]

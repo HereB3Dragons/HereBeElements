@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine.AddressableAssets;
 
-namespace com.herebedragons.herebeelements.Runtime.Locale
+namespace HereBeElements.Locale
 {
     [Serializable]
     public class AvailableLocale

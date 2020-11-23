@@ -1,9 +1,8 @@
 ﻿using UnityEngine.UI;
 
-namespace Templates
+namespace HereBeElements.Templates
 {
     public class UIText : Text
     {
-         
     }
 }
