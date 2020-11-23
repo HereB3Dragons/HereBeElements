@@ -817,5 +817,10 @@ namespace Internal
         {
             return Utils.LoadContent(assetRef, setter, percentageSetter);
         }
+        
+        public void LoadAsset<T>(AssetReference assetRef, Action<T> setter)
+        {
+            Utils.LoadAsset(assetRef, setter);
+        }
     }
 }

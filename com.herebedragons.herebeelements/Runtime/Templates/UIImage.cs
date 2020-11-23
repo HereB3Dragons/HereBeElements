@@ -16,7 +16,7 @@ namespace com.herebedragons.herebeelements.Runtime.Templates
 
         public AssetReference imageAssetReference;
         
-        private ShaderControl _sc;
+        protected ShaderControl _sc;
 
         protected UIImage()
         {

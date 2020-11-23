@@ -10,15 +10,13 @@ using UnityEngine.UI;
 
 [Serializable]
 [RequireComponent(typeof(ShaderControl))]
-[RequireComponent(typeof(UIImage))]
+[RequireComponent(typeof(Graphic))]
 public class UIElement : UISelectable, IPointerClickHandler, IElement
 {
     protected ShaderControl _sc;
     protected Graphic _graphic;
-    // private CanvasGroup _canvasGroup;
     private bool _isHighlight = false;
     private bool _isVisible = true;
-
 
     public bool IsVisible()
     {
@@ -95,15 +93,13 @@ public class UIElement : UISelectable, IPointerClickHandler, IElement
     
 #if UNITY_EDITOR
     protected override void OnValidate()
-    { 
+    {
+        if (_sc is null)
+            _sc = GetComponent<ShaderControl>();
         base.OnValidate();
-#else
-        protected virtual void OnValidate()
-        {
-#endif
         ApplyShaderConfig(); 
     }
-
+#endif
     public void ApplyShaderConfig()
     {
         Graphic g = GetGraphic();
@@ -229,4 +225,6 @@ public class UIElement : UISelectable, IPointerClickHandler, IElement
     {
         throw new NotImplementedException();
     }
+    
+     
 }

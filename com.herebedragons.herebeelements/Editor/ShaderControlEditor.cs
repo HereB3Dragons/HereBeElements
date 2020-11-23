@@ -1,6 +1,5 @@
 ﻿using HereBeElements.Components;
 using UnityEditor;
-using UnityEngine;
 
 namespace com.herebedragons.herebeelements.Editor
 {

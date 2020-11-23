@@ -41,23 +41,23 @@ public class Element: InGameSelectable, IElement
 
     public bool IsEnabled()
     {
-        return true; //throw new NotImplementedException();
+        return this.IsInteractable();
     }
 
     public void Enable(bool onOff = true)
     {
-        //throw new NotImplementedException();
+        if (onOff != this.IsInteractable())
+            this.interactable = onOff;
     }
 
     public void Disable()
     {
-        //throw new NotImplementedException();
+        Enable(false);
     }
 
     public bool IsHighlight()
     {
-        //throw new NotImplementedException();
-        return false;
+        return _isHighlight;
     }
 
     public void Highlight(bool onOff = true)
@@ -220,8 +220,5 @@ public class Element: InGameSelectable, IElement
         }
     }
 
-    public IEnumerator LoadContent<T>(AssetReference assetRef, Action<T> setter, Action<float> percentageSetter = null)
-    {
-        return Utils.LoadContent(assetRef, setter, percentageSetter);
-    }
+  
 }

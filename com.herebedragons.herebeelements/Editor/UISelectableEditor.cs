@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using Internal;
 using UnityEditor;
@@ -196,10 +197,17 @@ namespace com.herebedragons.herebeelements.Editor
         // TODO: find a nicer way of doing this. (creating a InheritedEditor class that automagically does this)
         private void ChildClassPropertiesGUI()
         {
-            if (IsDerivedSelectableEditor())
+            if (!IsDerivedSelectableEditor())
                 return;
-
-            DrawPropertiesExcluding(serializedObject, m_PropertyPathToExcludeForChildClasses);
+            
+            FieldInfo[] childFields = target.GetType().GetFields(BindingFlags.DeclaredOnly | BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+            foreach (FieldInfo field in childFields)
+            {
+                if (field.IsPublic || field.GetCustomAttribute(typeof(SerializeField)) != null)
+                {
+                    EditorGUILayout.PropertyField(serializedObject.FindProperty(field.Name));
+                }
+            }
         }
 
         private bool IsDerivedSelectableEditor()

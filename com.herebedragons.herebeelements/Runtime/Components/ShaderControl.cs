@@ -1,6 +1,5 @@
 ﻿using System;
 using com.herebedragons.herebeelements.Runtime.Templates;
-using JetBrains.Annotations;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -9,18 +8,22 @@ namespace HereBeElements.Components
     [Serializable]
     public class ShaderControl : MonoBehaviour
     {
+        [SerializeField]
         public bool isStatic = true;
+
+        private bool _isStatic = true;
+
         public ShaderConfig config = new ShaderConfig();
 
         public void ApplyConfig(Renderer r) => config.ApplyConfig(r);
 
         public void ApplyConfig(Graphic g) => config.ApplyConfig(g);
 
-        private UIElement _owner;
+        private IElement _owner;
 
         protected virtual void Awake()
         {
-            _owner = GetComponent<UIElement>();
+            _owner = GetComponent<IElement>();
         }
 
         public float Opacity
@@ -84,10 +87,31 @@ namespace HereBeElements.Components
 #if UNITY_EDITOR
         private void OnValidate()
         {
-            IElement parent = GetComponent<IElement>();
-            if (_owner == null) _owner = GetComponent<UIElement>();
-            if ( _owner != null && _owner.GetGraphic() != null)
-                ApplyConfig(_owner.GetGraphic());
+            _owner = GetComponent<IElement>();
+            if (_owner == null)
+                return;
+
+            if (_owner.GetType() == typeof(UIElement))
+            {
+                Graphic el = ((UIElement) _owner).GetGraphic();
+                if (!isStatic && _isStatic)
+                    config.DuplicateMaterial(el);
+                
+                if (el != null)
+                    ApplyConfig(el);
+            }
+            
+            if (_owner.GetType() == typeof(Element))
+            {
+                Renderer el = ((Element) _owner).GetGraphic();
+                if (!isStatic && _isStatic)
+                    config.DuplicateMaterial(el);
+                
+                if (el != null)
+                    ApplyConfig(el);
+            }
+
+            _isStatic = isStatic;
         }
 #endif
     }

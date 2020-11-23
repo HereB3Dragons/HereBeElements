@@ -29,6 +29,8 @@ namespace com.herebedragons.herebeelements.Runtime.Templates
 
         private readonly Dictionary<int, Object> _cachedValues = new Dictionary<int, object>();
 
+        public bool isStatic = true;
+
         // Base
         internal static readonly int Opacity = Shader.PropertyToID("opacity");
         internal static readonly int AlphaClip = Shader.PropertyToID("alphaClip");
@@ -43,25 +45,34 @@ namespace com.herebedragons.herebeelements.Runtime.Templates
 
         internal void ApplyConfig(Renderer renderer)
         {
-            if (renderer == null) return;
-            renderer.material = ApplyConfig(renderer.material);
-        }
-
-        internal void ApplyConfig(Image image)
-        {
-            if (image == null) return;
-            image.material = ApplyConfig(image.material);
+            if (isStatic || renderer == null) return;
+#if !UNITY_EDITOR
+            _material = renderer.material; 
+#endif
+            ApplyConfig();
         }
 
         internal void ApplyConfig(Graphic graphic)
         {
-            if (graphic == null) return;
-            graphic.material = ApplyConfig(graphic.material);
+            if (isStatic || graphic == null) return;
+#if !UNITY_EDITOR
+            _material = graphic.material; 
+#endif
+            ApplyConfig();
         }
 
-        private Material ApplyConfig(Material material)
+        internal void DuplicateMaterial(Renderer renderer)
         {
-            _material = new Material(material);
+            renderer.material = new Material(renderer.material);
+        }
+        
+        internal void DuplicateMaterial(Graphic graphic)
+        {
+            graphic.material = new Material(graphic.material);
+        }
+
+        private void ApplyConfig()
+        {
             // general
             SetFloat(Opacity, opacity);
             SetFloat(AlphaClip, alphaClipThreshold);
@@ -71,13 +82,6 @@ namespace com.herebedragons.herebeelements.Runtime.Templates
             SetBool(Border, border);
             SetFloat(BorderWidth, borderWidth);
             SetColor(BorderColor, borderColor);
-            
-            return _material;
-        }
-
-        private void CacheValues()
-        {
-            CacheValues(_material);
         }
 
         private void CacheValues(Material material)
@@ -101,7 +105,7 @@ namespace com.herebedragons.herebeelements.Runtime.Templates
             }
         }
 
-        public void SetColor(int key, Color color)
+        public void SetColor( int key, Color color)
         {
             if (CheckMaterial(key, color))
             {
