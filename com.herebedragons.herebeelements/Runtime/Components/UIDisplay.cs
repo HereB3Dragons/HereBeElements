@@ -1,15 +1,16 @@
 ﻿using System;
 using HereBeElements.Internal;
+using HereBeElements.Templates;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace HereBeElements.Templates
+namespace HereBeElements
 {
     [RequireComponent(typeof(Text))]
     [Serializable]
     public class UIDisplay: UIElement, IDisplay
     {
-        private Text _text;
+        protected Text _text;
 
         public string placeHolder = "";
 
@@ -40,12 +41,14 @@ namespace HereBeElements.Templates
         {
             Show(Utils.EMPTY);
         }
-
+      
+        
 #if UNITY_EDITOR
         protected override void OnValidate()
         {
             base.OnValidate();
-            Show(text);
+            if (_text != null)
+                Show(text);
         }
 #endif
     }

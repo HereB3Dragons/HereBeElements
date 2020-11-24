@@ -72,6 +72,19 @@ namespace HereBeElements.Internal
 
         }
         
+        protected new SelectionState currentSelectionState
+        {
+            get
+            {
+                if (!IsInteractable())
+                    return SelectionState.Disabled;
+                //if (isPointerInside)
+                //    return SelectionState.Highlighted;
+                SelectionState s = base.currentSelectionState;
+                return SelectionState.Highlighted == s ? SelectionState.Normal : s;
+            }
+        }
+        
         void StartColorTween(Color targetColor, bool instant)
         {
             if (targetGraphic == null)

@@ -1,61 +1,69 @@
 ﻿using System;
+using System.Collections;
 using HereBeElements.Templates;
-using HereBeElements.Components;
 using HereBeElements.Internal;
+using HereBeElements.Shaders;
 using UnityEngine;
 using UnityEngine.EventSystems;
-using UnityEngine.UI;
 
 namespace HereBeElements
 {
-
     [Serializable]
     [RequireComponent(typeof(ShaderControl))]
-    [RequireComponent(typeof(Graphic))]
-    public class UIElement : UISelectable, IPointerClickHandler, IElement
+    public class Element : InGameSelectable, IElement
     {
-        protected ShaderControl _sc;
-        protected Graphic _graphic;
-        private bool _isHighlight = false;
         private bool _isVisible = true;
+        private bool _isHighlight = false;
+        
+
+        protected SpriteRenderer _renderer;
+        protected Transform _transform;
+
+        protected override void Awake()
+        {
+            base.Awake();
+            _renderer = GetComponent<SpriteRenderer>();
+            _transform = transform;
+        }
 
         public bool IsVisible()
         {
             return _isVisible;
         }
 
-        public void Show(bool onOff = true)
+        public virtual void Show(bool onOff = true)
         {
             _sc.Opacity = onOff ? 1 : 0;
             _isHighlight = onOff;
         }
 
-        public void Hide()
+        public virtual void Hide()
         {
             Show(false);
         }
 
         public bool IsEnabled()
         {
-            return IsInteractable();
+            return this.IsInteractable();
         }
 
-        public void Enable(bool onOff = true)
+        public virtual void Enable(bool onOff = true)
         {
-            this.interactable = onOff;
+            if (onOff != this.IsInteractable())
+                this.interactable = onOff;
         }
 
-        public void Disable()
+        public virtual void Disable()
         {
             Enable(false);
         }
 
         public bool IsHighlight()
         {
-            return base.IsHighlighted() || _isHighlight;
+            return _isHighlight;
         }
 
-        public void Highlight(bool onOff = true)
+        public virtual void Highlight(bool onOff = true)
         {
             if (onOff)
             {
@@ -79,42 +87,31 @@ namespace HereBeElements
             }
         }
 
-        public void DeHighlight()
+        public virtual void DeHighlight()
         {
             Highlight(false);
         }
-
-        protected override void Awake()
-        {
-            base.Awake();
-            _sc = GetComponent<ShaderControl>();
-            _graphic = GetComponent<Graphic>();
-            ApplyShaderConfig();
-        }
-
 #if UNITY_EDITOR
         protected override void OnValidate()
         {
-            if (_sc is null)
+            if (_sc == null)
                 _sc = GetComponent<ShaderControl>();
             base.OnValidate();
             ApplyShaderConfig();
         }
 #endif
+
         public void ApplyShaderConfig()
         {
-            Graphic g = GetGraphic();
-            if (g != null)
-                _sc.ApplyConfig(g);
+            _sc.ApplyConfig();
         }
 
-        public Graphic GetGraphic()
+        public SpriteRenderer GetGraphic()
         {
-            if (_graphic == null)
-                _graphic = GetComponent<Graphic>();
-            return _graphic;
+            if (_renderer == null)
+                _renderer = GetComponent<SpriteRenderer>();
+            return _renderer;
         }
-
 
         public delegate void EnableEventHandler();
 
@@ -196,7 +193,7 @@ namespace HereBeElements
 
         public event ClickEventHandler ClickEvent;
 
-        public void OnPointerClick(PointerEventData eventData)
+        protected virtual void OnPointerClick(PointerEventData eventData)
         {
             if (eventData.button != PointerEventData.InputButton.Left)
                 return;
@@ -230,5 +227,29 @@ namespace HereBeElements
                 mouseLeave();
             }
         }
+
+        public IEnumerator MoveTo(Vector3 destination, Action callback = null, float duration = 1.5f, Action<float> progress = null)
+        {
+            if (_transform == null)
+                yield break;
+            
+            Vector3 origin = _transform.position;
+            float journey = 0f;
+
+            while (journey <= duration)
+            {
+                journey += Time.deltaTime;
+                float percent = Mathf.Clamp01(journey / duration);
+                if (_transform == null) break;
+                _transform.position = Vector3.Lerp(origin, destination, Mathf.SmoothStep(0.0f, 1.0f, percent));
+                if (progress != null)
+                    progress.Invoke(percent);
+                yield return null;
+            }
+            
+            if (callback != null)
+                callback.Invoke();
+        }
     }
+
 }

@@ -1,7 +1,7 @@
 ﻿using System;
 using HereBeElements.Locale;
 
-namespace HereBeElements.Templates
+namespace HereBeElements
 {
     [Serializable]
     public class LocalizedUIDisplay<T> : UIDisplay where T : Enum

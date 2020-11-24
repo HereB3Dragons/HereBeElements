@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections;
-using HereBeElements.Components;
 using HereBeElements.Internal;
+using HereBeElements.Shaders;
+using HereBeElements.Templates;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.UI;
 
-namespace HereBeElements.Templates
+namespace HereBeElements
 {
     [RequireComponent(typeof(ShaderControl))]
     public class UIImage : Image, ILoadable

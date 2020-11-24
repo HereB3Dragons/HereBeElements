@@ -3,7 +3,6 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using HereBeElements.Internal;
-using Internal;
 using UnityEditor;
 using UnityEditor.AnimatedValues;
 using UnityEditor.UI;
@@ -19,6 +18,7 @@ namespace com.herebedragons.herebeelements.Editor
         SerializedProperty m_InteractableProperty;
         SerializedProperty m_TargetGraphicProperty;
         SerializedProperty m_TransitionProperty;
+        SerializedProperty false_ColorBlockProperty;
         SerializedProperty m_ColorBlockProperty;
         SerializedProperty m_SpriteStateProperty;
         SerializedProperty m_AnimTriggerProperty;
@@ -45,6 +45,7 @@ namespace com.herebedragons.herebeelements.Editor
             m_TargetGraphicProperty = serializedObject.FindProperty("m_TargetGraphic");
             m_TransitionProperty    = serializedObject.FindProperty("m_Transition");
             m_ColorBlockProperty    = serializedObject.FindProperty("mm_Colors");
+            false_ColorBlockProperty    = serializedObject.FindProperty("m_Colors");
             m_SpriteStateProperty   = serializedObject.FindProperty("m_SpriteState");
             m_AnimTriggerProperty   = serializedObject.FindProperty("m_AnimationTriggers");
             m_NavigationProperty    = serializedObject.FindProperty("m_Navigation");
@@ -59,6 +60,7 @@ namespace com.herebedragons.herebeelements.Editor
                 m_AnimTriggerProperty.propertyPath,
                 m_InteractableProperty.propertyPath,
                 m_TargetGraphicProperty.propertyPath,
+                false_ColorBlockProperty.propertyPath
             };
 
             var trans = GetTransition(m_TransitionProperty);
@@ -198,22 +200,24 @@ namespace com.herebedragons.herebeelements.Editor
         // TODO: find a nicer way of doing this. (creating a InheritedEditor class that automagically does this)
         private void ChildClassPropertiesGUI()
         {
-            if (!IsDerivedSelectableEditor())
+            if (IsDerivedSelectableEditor())
                 return;
+            DrawPropertiesExcluding(serializedObject, m_PropertyPathToExcludeForChildClasses);
             
-            FieldInfo[] childFields = target.GetType().GetFields(BindingFlags.DeclaredOnly | BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
-            foreach (FieldInfo field in childFields)
-            {
-                if (field.IsPublic || field.GetCustomAttribute(typeof(SerializeField)) != null)
-                {
-                    EditorGUILayout.PropertyField(serializedObject.FindProperty(field.Name));
-                }
-            }
+            // FieldInfo[] childFields = target.GetType().GetFields(BindingFlags.DeclaredOnly | BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+            // foreach (FieldInfo field in childFields)
+            // {
+            //     if (field.IsPublic || field.GetCustomAttribute(typeof(SerializeField)) != null)
+            //     {
+            //         
+            //         EditorGUILayout.PropertyField(serializedObject.FindProperty(field.Name));
+            //     }
+            // }
         }
 
         private bool IsDerivedSelectableEditor()
         {
-            return GetType() != typeof(SelectableEditor);
+            return GetType() != typeof(UISelectableEditor);
         }
 
         private static UnityEditor.Animations.AnimatorController GenerateSelectableAnimatorContoller(AnimationTriggers animationTriggers, Selectable target)

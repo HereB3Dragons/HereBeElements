@@ -46,12 +46,12 @@ namespace HereBeElements.Locale
         public static Locale<T> Init(string lang, Dictionary<string, string> cache = null)
         {
             AvailableLocale l= StringToLocale(lang); 
-            if (_instance is null)
+            if (_instance == null)
                 _instance = new Locale<T>(l);
 
             if (cache != null)
                 _messages = cache;
-            else if (_messages is null)
+            else if (_messages == null)
                 _messages = new Dictionary<string, string>();
             
             SetLocale(l);
@@ -106,7 +106,7 @@ namespace HereBeElements.Locale
         
         private static void SetLocale(TextAsset localeTextAsset)
         {
-            if (localeTextAsset is null) return;
+            if (localeTextAsset == null) return;
 
             Dictionary<string, Dictionary<string, string>> dictFromJson = Utils.FromJson(localeTextAsset.text);
             if (dictFromJson == null || dictFromJson.Count == 0) return;
@@ -128,7 +128,7 @@ namespace HereBeElements.Locale
 
         private static string GetOrUndefined(string key)
         {
-            if (_messages is null || !_messages.ContainsKey(key))
+            if (_messages == null || !_messages.ContainsKey(key))
                 return UNDEFINED;
             return _messages[key];
         }

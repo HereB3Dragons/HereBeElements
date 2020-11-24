@@ -1,5 +1,6 @@
-﻿using HereBeElements.Components;
+﻿using HereBeElements.Shaders;
 using UnityEditor;
+using UnityEngine;
 
 namespace com.herebedragons.herebeelements.Editor
 {
@@ -49,6 +50,11 @@ namespace com.herebedragons.herebeelements.Editor
                     EditorGUILayout.PropertyField(_borderWidth);
                     EditorGUILayout.PropertyField(_borderColor);
                 }
+                
+                ShaderControl control = target as ShaderControl;
+                if (control != null)
+                    if (GUILayout.Button("Create new Material"))
+                        control.CreateNewMaterialInstance();
             }
             
             serializedObject.ApplyModifiedProperties();

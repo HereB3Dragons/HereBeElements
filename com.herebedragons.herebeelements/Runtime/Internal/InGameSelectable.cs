@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections;
-using HereBeElements.Components;
+using HereBeElements.Shaders;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.EventSystems;

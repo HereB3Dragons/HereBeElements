@@ -1,6 +1,6 @@
 ﻿using UnityEngine.UI;
 
-namespace HereBeElements.Templates
+namespace HereBeElements
 {
     public class UIText : Text
     {
