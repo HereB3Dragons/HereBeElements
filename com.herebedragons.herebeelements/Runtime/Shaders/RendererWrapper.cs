@@ -8,10 +8,13 @@ namespace HereBeElements.Shaders
     {
         [SerializeField]
         private SpriteRenderer _renderer;
+        [SerializeField]
+        private MaterialPropertyBlock _props = new MaterialPropertyBlock();
 
         public RendererWrapper(SpriteRenderer r)
         {
             _renderer = r;
+            _renderer.GetPropertyBlock(_props);
         }
         
         public bool CreateNewMaterialInstance()
@@ -50,8 +53,10 @@ namespace HereBeElements.Shaders
 
         public void SetAlpha(float value)
         {
-            Color c = _renderer.color;
-            SetColor(-1, new Color(c.r, c.g, c.b, c.a) ); 
+            MaterialPropertyBlock props = new MaterialPropertyBlock();
+            _renderer.GetPropertyBlock(props);
+            props.SetFloat(ShaderConfig.Opacity, value);
+            _renderer.SetPropertyBlock(props);
         }
     }
 }

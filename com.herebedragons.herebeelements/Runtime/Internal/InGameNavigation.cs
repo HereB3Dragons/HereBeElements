@@ -14,19 +14,19 @@ namespace HereBeElements.Internal
 
         // Game object selected when the joystick moves up. Used when navigation is set to "Explicit".
         [SerializeField]
-        private InGameSelectable m_SelectOnUp;
+        private ISelectable m_SelectOnUp;
 
         // Game object selected when the joystick moves down. Used when navigation is set to "Explicit".
         [SerializeField]
-        private InGameSelectable m_SelectOnDown;
+        private ISelectable m_SelectOnDown;
 
         // Game object selected when the joystick moves left. Used when navigation is set to "Explicit".
         [SerializeField]
-        private InGameSelectable m_SelectOnLeft;
+        private ISelectable m_SelectOnLeft;
 
         // Game object selected when the joystick moves right. Used when navigation is set to "Explicit".
         [SerializeField]
-        private InGameSelectable m_SelectOnRight;
+        private ISelectable m_SelectOnRight;
 
         /// <summary>
         /// Navigation mode.
@@ -64,7 +64,7 @@ namespace HereBeElements.Internal
         /// }
         /// </code>
         /// </example>
-        public InGameSelectable selectOnUp     { get { return m_SelectOnUp; } set { m_SelectOnUp = value; } }
+        public ISelectable selectOnUp     { get { return m_SelectOnUp; } set { m_SelectOnUp = value; } }
 
         /// <summary>
         /// Specify a Selectable UI GameObject to highlight when the down arrow key is pressed.
@@ -97,7 +97,7 @@ namespace HereBeElements.Internal
         /// }
         /// </code>
         /// </example>
-        public InGameSelectable selectOnDown   { get { return m_SelectOnDown; } set { m_SelectOnDown = value; } }
+        public ISelectable selectOnDown   { get { return m_SelectOnDown; } set { m_SelectOnDown = value; } }
 
         /// <summary>
         /// Specify a Selectable UI GameObject to highlight when the left arrow key is pressed.
@@ -130,7 +130,7 @@ namespace HereBeElements.Internal
         /// }
         /// </code>
         /// </example>
-        public InGameSelectable selectOnLeft   { get { return m_SelectOnLeft; } set { m_SelectOnLeft = value; } }
+        public ISelectable selectOnLeft   { get { return m_SelectOnLeft; } set { m_SelectOnLeft = value; } }
 
         /// <summary>
         /// Specify a Selectable UI GameObject to highlight when the right arrow key is pressed.
@@ -163,7 +163,7 @@ namespace HereBeElements.Internal
         /// }
         /// </code>
         /// </example>
-        public InGameSelectable selectOnRight  { get { return m_SelectOnRight; } set { m_SelectOnRight = value; } }
+        public ISelectable selectOnRight  { get { return m_SelectOnRight; } set { m_SelectOnRight = value; } }
 
         /// <summary>
         /// Return a Navigation with sensible default values.

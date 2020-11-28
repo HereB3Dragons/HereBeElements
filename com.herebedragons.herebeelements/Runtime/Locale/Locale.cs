@@ -114,7 +114,7 @@ namespace HereBeElements.Locale
             _messages.Clear();
             foreach (var keyValuePair in dictFromJson)
                 foreach (var valuePair in keyValuePair.Value)
-                    _messages.Add(keyValuePair.Key + "_" + valuePair.Key, valuePair.Value);
+                    _messages.Add(keyValuePair.Key.Trim() + "_" + valuePair.Key.Trim(), valuePair.Value.Trim());
             
             if (ChangeLanguageEvent != null)
                 ChangeLanguageEvent.Invoke();

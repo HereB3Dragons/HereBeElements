@@ -7,8 +7,13 @@ using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.UI;
 
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
+
 namespace HereBeElements
 {
+    [CanEditMultipleObjects]
     [RequireComponent(typeof(ShaderControl))]
     public class UIImage : Image, ILoadable
     {

@@ -13,6 +13,7 @@ using UnityEngine.UI;
 namespace com.herebedragons.herebeelements.Editor
 {
     [CustomEditor(typeof(InGameSelectable), true)]
+    [CanEditMultipleObjects]
     public class InGameSelectableEditor: UnityEditor.Editor {
         
         SerializedProperty m_Script;
@@ -352,12 +353,12 @@ namespace com.herebedragons.herebeelements.Editor
         const float kArrowThickness = 2.5f;
         const float kArrowHeadSize = 1.2f;
 
-        private static void DrawNavigationArrow(Vector2 direction, InGameSelectable fromObj, InGameSelectable toObj)
+        private static void DrawNavigationArrow(Vector2 direction, ISelectable fromObj, ISelectable toObj)
         {
             if (fromObj == null || toObj == null)
                 return;
-            Transform fromTransform = fromObj.transform;
-            Transform toTransform = toObj.transform;
+            Transform fromTransform = fromObj.GetGameObject().transform;
+            Transform toTransform = toObj.GetGameObject().transform;
 
             Vector2 sideDir = new Vector2(direction.y, -direction.x);
             Vector3 fromPoint = fromTransform.TransformPoint(GetPointOnRectEdge(fromTransform as RectTransform, direction));

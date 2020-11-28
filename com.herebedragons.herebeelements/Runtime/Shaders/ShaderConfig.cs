@@ -106,7 +106,7 @@ namespace HereBeElements.Shaders
             {
                 try
                 {
-                    renderer.SetColor(key, color);
+                    renderer.SetColor(key, new Color(color.r, color.g, color.b, color.a * opacity));
                     _cachedValues[key] = color;
                 }
                 catch (Exception e)

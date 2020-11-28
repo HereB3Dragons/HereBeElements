@@ -26,7 +26,7 @@ namespace HereBeElements
         {
             if (_text != null)
             {
-                if (text.Equals(Utils.EMPTY))
+                if (Utils.EMPTY.Equals(text))
                     text = placeHolder;
                 _text.text = text;
             }

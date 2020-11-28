@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections;
-using HereBeElements.Shaders;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.EventSystems;
@@ -9,33 +9,114 @@ using UnityEngine.UI;
 
 namespace HereBeElements.Internal
 {
-    [RequireComponent(typeof(ShaderControl))]
-    public class InGameSelectable : MonoBehaviour, IMoveHandler, IPointerDownHandler, IPointerUpHandler,
-        IPointerEnterHandler, IPointerExitHandler, ISelectHandler, IDeselectHandler, ISelectable
+    [ExecuteAlways]
+    [SelectionBase]
+    [DisallowMultipleComponent]
+    /// <summary>
+    /// Simple selectable object - derived from to create a selectable control.
+    /// </summary>
+    public abstract class BaseSelectable
+        :
+        UIBehaviour,
+        IMoveHandler,
+        IPointerDownHandler, IPointerUpHandler,
+        IPointerEnterHandler, IPointerExitHandler,
+        ISelectHandler, IDeselectHandler, ISelectable
     {
-        
-        protected static InGameSelectable[] s_Selectables = new InGameSelectable[10];
+        protected static BaseSelectable[] s_Selectables = new BaseSelectable[10];
         protected static int s_SelectableCount = 0;
         private bool m_EnableCalled = false;
 
-        protected ShaderControl _sc;
-
-        public static InGameSelectable[] allSelectablesArray
+        /// <summary>
+        /// Copy of the array of all the selectable objects currently active in the scene.
+        /// </summary>
+        /// <example>
+        /// <code>
+        /// using UnityEngine;
+        /// using System.Collections;
+        /// using UnityEngine.UI; // required when using UI elements in scripts
+        ///
+        /// public class Example : MonoBehaviour
+        /// {
+        ///     //Displays the names of all selectable elements in the scene
+        ///     public void GetNames()
+        ///     {
+        ///         foreach (Selectable selectableUI in Selectable.allSelectablesArray)
+        ///         {
+        ///             Debug.Log(selectableUI.name);
+        ///         }
+        ///     }
+        /// }
+        /// </code>
+        /// </example>
+        public static BaseSelectable[] allSelectablesArray
         {
             get
             {
-                InGameSelectable[] temp = new InGameSelectable[s_SelectableCount];
+                BaseSelectable[] temp = new BaseSelectable[s_SelectableCount];
                 Array.Copy(s_Selectables, temp, s_SelectableCount);
                 return temp;
             }
         }
 
-        public bool IsActive()
+        public GameObject GetGameObject()
         {
-            throw new NotImplementedException();
+            return gameObject;
         }
 
-        public static int AllSelectablesNoAlloc(InGameSelectable[] selectables)
+        /// <summary>
+        /// How many selectable elements are currently active.
+        /// </summary>
+        public static int allSelectableCount { get { return s_SelectableCount; } }
+
+        /// <summary>
+        /// A List instance of the allSelectablesArray to maintain API compatibility.
+        /// </summary>
+
+        [Obsolete("Replaced with allSelectablesArray to have better performance when disabling a element", false)]
+        public static List<BaseSelectable> allSelectables
+        {
+            get
+            {
+                return new List<BaseSelectable>(allSelectablesArray);
+            }
+        }
+
+
+        /// <summary>
+        /// Non allocating version for getting the all selectables.
+        /// If selectables.Length is less then s_SelectableCount only selectables.Length elments will be copied which
+        /// could result in a incomplete list of elements.
+        /// </summary>
+        /// <param name="selectables">The array to be filled with current selectable objects</param>
+        /// <returns>The number of element copied.</returns>
+        /// <example>
+        /// <code>
+        /// using UnityEngine;
+        /// using System.Collections;
+        /// using UnityEngine.UI; // required when using UI elements in scripts
+        ///
+        /// public class Example : MonoBehaviour
+        /// {
+        ///     BaseSelectable[] m_Selectables = new BaseSelectable[10];
+        ///
+        ///     //Displays the names of all selectable elements in the scene
+        ///     public void GetNames()
+        ///     {
+        ///         if (m_Selectables.Length < Selectable.allSelectableCount)
+        ///             m_Selectables = new BaseSelectable[Selectable.allSelectableCount];
+        ///
+        ///         int count = Selectable.AllSelectablesNoAlloc(ref m_Selectables);
+        ///
+        ///         for (int i = 0; i < count; ++i)
+        ///         {
+        ///             Debug.Log(m_Selectables[i].name);
+        ///         }
+        ///     }
+        /// }
+        /// </code>
+        /// </example>
+        public static int AllSelectablesNoAlloc(Selectable[] selectables)
         {
             int copyCount = selectables.Length < s_SelectableCount ? selectables.Length : s_SelectableCount;
 
@@ -43,57 +124,231 @@ namespace HereBeElements.Internal
 
             return copyCount;
         }
-        
-         // Type of the transition that occurs when the button state changes.
+
+        // InGameNavigation information.
+        [FormerlySerializedAs("navigation")]
         [SerializeField]
-        private Selectable.Transition m_Transition = Selectable.Transition.ColorTint;
+        private InGameNavigation m_Navigation = InGameNavigation.defaultNavigation;
+
+        /// <summary>
+        ///Transition mode for a Selectable.
+        /// </summary>
+        public enum Transition
+        {
+            /// <summary>
+            /// No Transition.
+            /// </summary>
+            None,
+
+            /// <summary>
+            /// Use an color tint transition.
+            /// </summary>
+            ColorTint,
+
+            /// <summary>
+            /// Use a sprite swap transition.
+            /// </summary>
+            SpriteSwap,
+
+            /// <summary>
+            /// Use an animation transition.
+            /// </summary>
+            Animation
+        }
+
+        // Type of the transition that occurs when the button state changes.
+        [FormerlySerializedAs("transition")]
+        [SerializeField]
+        private Transition m_Transition = Transition.ColorTint;
 
         // Colors used for a color tint-based transition.
+        [FormerlySerializedAs("colors")]
         [SerializeField]
-        private UIColorBlock m_Colors = UIColorBlock.defaultColorBlock;
+        private ColorBlock m_Colors = ColorBlock.defaultColorBlock;
 
         // Sprites used for a Image swap-based transition.
+        [FormerlySerializedAs("spriteState")]
         [SerializeField]
         private SpriteState m_SpriteState;
 
+        [FormerlySerializedAs("animationTriggers")]
         [SerializeField]
         private AnimationTriggers m_AnimationTriggers = new AnimationTriggers();
 
-        [Tooltip("Can the Selectable be interacted with?")]
+        [Tooltip("Can the BaseSelectable be interacted with?")]
         [SerializeField]
         private bool m_Interactable = true;
 
         // Graphic that will be colored.
+        [FormerlySerializedAs("highlightGraphic")]
+        [FormerlySerializedAs("m_HighlightGraphic")]
         [SerializeField]
-        private SpriteRenderer m_TargetGraphic;
+        private Graphic m_TargetGraphic;
 
 
         private bool m_GroupsAllowInteraction = true;
         protected int m_CurrentIndex = -1;
-        
-        private readonly TweenRunner<ColorTween> m_ColorTweenRunner;
-        
-        [FormerlySerializedAs("navigation")]
-        [SerializeField]
-        private InGameNavigation m_Navigation = InGameNavigation.defaultNavigation;
+
+        /// <summary>
+        /// The InGameNavigation setting for this selectable object.
+        /// </summary>
+        /// <example>
+        /// <code>
+        /// using UnityEngine;
+        /// using System.Collections;
+        /// using UnityEngine.UI; // Required when Using UI elements.
+        ///
+        /// public class ExampleClass : MonoBehaviour
+        /// {
+        ///     public Button button;
+        ///
+        ///     void Start()
+        ///     {
+        ///         //Set the navigation to the default value. ("Automatic" is the default value).
+        ///         button.navigation = InGameNavigation.defaultInGameNavigation;
+        ///     }
+        /// }
+        /// </code>
+        /// </example>
         public InGameNavigation        navigation        { get { return m_Navigation; } set { if (SetPropertyUtility.SetStruct(ref m_Navigation, value))        OnSetProperty(); } }
 
-       
-        public Selectable.Transition        transition        { get { return m_Transition; } set { if (SetPropertyUtility.SetStruct(ref m_Transition, value))        OnSetProperty(); } }
+        /// <summary>
+        /// The type of transition that will be applied to the targetGraphic when the state changes.
+        /// </summary>
+        /// <example>
+        /// <code>
+        /// using UnityEngine;
+        /// using System.Collections;
+        /// using UnityEngine.UI; // Required when Using UI elements.
+        ///
+        /// public class ExampleClass : MonoBehaviour
+        /// {
+        ///     public Button btnMain;
+        ///
+        ///     void SomeFunction()
+        ///     {
+        ///         //Sets the main button's transition setting to "Color Tint".
+        ///         btnMain.transition = Selectable.Transition.ColorTint;
+        ///     }
+        /// }
+        /// </code>
+        /// </example>
+        public Transition        transition        { get { return m_Transition; } set { if (SetPropertyUtility.SetStruct(ref m_Transition, value))        OnSetProperty(); } }
 
-       
-        public UIColorBlock        colors            { get { return m_Colors; } set { if (SetPropertyUtility.SetStruct(ref m_Colors, value))            OnSetProperty(); } }
+        /// <summary>
+        /// The ColorBlock for this selectable object.
+        /// </summary>
+        /// <remarks>
+        /// Modifications will not be visible if  transition is not ColorTint.
+        /// </remarks>
+        /// <example>
+        /// <code>
+        /// using UnityEngine;
+        /// using System.Collections;
+        /// using UnityEngine.UI; // Required when Using UI elements.
+        ///
+        /// public class ExampleClass : MonoBehaviour
+        /// {
+        ///     public Button button;
+        ///
+        ///     void Start()
+        ///     {
+        ///         //Resets the colors in the buttons transitions.
+        ///         button.colors = ColorBlock.defaultColorBlock;
+        ///     }
+        /// }
+        /// </code>
+        /// </example>
+        public ColorBlock        colors            { get { return m_Colors; } set { if (SetPropertyUtility.SetStruct(ref m_Colors, value))            OnSetProperty(); } }
 
-       
+        /// <summary>
+        /// The SpriteState for this selectable object.
+        /// </summary>
+        /// <remarks>
+        /// Modifications will not be visible if transition is not SpriteSwap.
+        /// </remarks>
+        /// <example>
+        // <code>
+        // using UnityEngine;
+        // using System.Collections;
+        // using UnityEngine.UI; // Required when Using UI elements.
+        //
+        // public class ExampleClass : MonoBehaviour
+        // {
+        //     //Creates an instance of a sprite state (This includes the highlighted, pressed and disabled sprite.
+        //     public SpriteState sprState = new SpriteState();
+        //     public Button btnMain;
+        //
+        //
+        //     void Start()
+        //     {
+        //         //Assigns the new sprite states to the button.
+        //         btnMain.spriteState = sprState;
+        //     }
+        // }
+        // </code>
+        // </example>
         public SpriteState       spriteState       { get { return m_SpriteState; } set { if (SetPropertyUtility.SetStruct(ref m_SpriteState, value))       OnSetProperty(); } }
 
-      
+        /// <summary>
+        /// The AnimationTriggers for this selectable object.
+        /// </summary>
+        /// <remarks>
+        /// Modifications will not be visible if transition is not Animation.
+        /// </remarks>
         public AnimationTriggers animationTriggers { get { return m_AnimationTriggers; } set { if (SetPropertyUtility.SetClass(ref m_AnimationTriggers, value)) OnSetProperty(); } }
 
-      
-        public SpriteRenderer           targetGraphic     { get { return m_TargetGraphic; } set { if (SetPropertyUtility.SetClass(ref m_TargetGraphic, value))     OnSetProperty(); } }
+        /// <summary>
+        /// Graphic that will be transitioned upon.
+        /// </summary>
+        /// <example>
+        /// <code>
+        /// using UnityEngine;
+        /// using System.Collections;
+        /// using UnityEngine.UI; // Required when Using UI elements.
+        ///
+        /// public class ExampleClass : MonoBehaviour
+        /// {
+        ///     public Image newImage;
+        ///     public Button btnMain;
+        ///
+        ///     void SomeFunction()
+        ///     {
+        ///         //Displays the sprite transitions on the image when the transition to Highlighted,pressed or disabled is made.
+        ///         btnMain.targetGraphic = newImage;
+        ///     }
+        /// }
+        /// </code>
+        /// </example>
+        public Graphic           targetGraphic     { get { return m_TargetGraphic; } set { if (SetPropertyUtility.SetClass(ref m_TargetGraphic, value))     OnSetProperty(); } }
 
-      
+        /// <summary>
+        /// Is this object interactable.
+        /// </summary>
+        /// <example>
+        /// <code>
+        /// using UnityEngine;
+        /// using System.Collections;
+        /// using UnityEngine.UI; // required when using UI elements in scripts
+        ///
+        /// public class Example : MonoBehaviour
+        /// {
+        ///     public Button startButton;
+        ///     public bool playersReady;
+        ///
+        ///
+        ///     void Update()
+        ///     {
+        ///         // checks if the players are ready and if the start button is useable
+        ///         if (playersReady == true && startButton.interactable == false)
+        ///         {
+        ///             //allows the start button to be used
+        ///             startButton.interactable = true;
+        ///         }
+        ///     }
+        /// }
+        /// </code>
+        /// </example>
         public bool              interactable
         {
             get { return m_Interactable; }
@@ -112,13 +367,40 @@ namespace HereBeElements.Internal
         private bool             isPointerDown     { get; set; }
         private bool             hasSelection      { get; set; }
 
-        protected InGameSelectable()
+        protected BaseSelectable()
+        {}
+
+        /// <summary>
+        /// Convenience function that converts the referenced Graphic to a Image, if possible.
+        /// </summary>
+        public Image image
         {
-            if (m_ColorTweenRunner == null)
-                m_ColorTweenRunner = new TweenRunner<ColorTween>();
-            m_ColorTweenRunner.Init(this);
+            get { return m_TargetGraphic as Image; }
+            set { m_TargetGraphic = value; }
         }
-        
+
+        /// <summary>
+        /// Convenience function to get the Animator component on the GameObject.
+        /// </summary>
+        /// <example>
+        /// <code>
+        /// using UnityEngine;
+        /// using System.Collections;
+        /// using UnityEngine.UI; // Required when Using UI elements.
+        ///
+        /// public class ExampleClass : MonoBehaviour
+        /// {
+        ///     private Animator buttonAnimator;
+        ///     public Button button;
+        ///
+        ///     void Start()
+        ///     {
+        ///         //Assigns the "buttonAnimator" with the button's animator.
+        ///         buttonAnimator = button.animator;
+        ///     }
+        /// }
+        /// </code>
+        /// </example>
 #if PACKAGE_ANIMATION
         public Animator animator
         {
@@ -126,35 +408,97 @@ namespace HereBeElements.Internal
         }
 #endif
 
-        protected virtual void Awake()
+        protected override void Awake()
         {
-            _sc = GetComponent<ShaderControl>(); 
-            m_TargetGraphic = GetComponent<SpriteRenderer>();
+            if (m_TargetGraphic == null)
+                m_TargetGraphic = GetComponent<Graphic>();
         }
-        
-      public virtual bool IsInteractable()
+
+        private readonly List<CanvasGroup> m_CanvasGroupCache = new List<CanvasGroup>();
+        protected override void OnCanvasGroupChanged()
+        {
+            // Figure out if parent groups allow interaction
+            // If no interaction is alowed... then we need
+            // to not do that :)
+            var groupAllowInteraction = true;
+            Transform t = transform;
+            while (t != null)
+            {
+                t.GetComponents(m_CanvasGroupCache);
+                bool shouldBreak = false;
+                for (var i = 0; i < m_CanvasGroupCache.Count; i++)
+                {
+                    // if the parent group does not allow interaction
+                    // we need to break
+                    if (!m_CanvasGroupCache[i].interactable)
+                    {
+                        groupAllowInteraction = false;
+                        shouldBreak = true;
+                    }
+                    // if this is a 'fresh' group, then break
+                    // as we should not consider parents
+                    if (m_CanvasGroupCache[i].ignoreParentGroups)
+                        shouldBreak = true;
+                }
+                if (shouldBreak)
+                    break;
+
+                t = t.parent;
+            }
+
+            if (groupAllowInteraction != m_GroupsAllowInteraction)
+            {
+                m_GroupsAllowInteraction = groupAllowInteraction;
+                OnSetProperty();
+            }
+        }
+
+        /// <summary>
+        /// Is the object interactable.
+        /// </summary>
+        /// <example>
+        /// <code>
+        /// using UnityEngine;
+        /// using System.Collections;
+        /// using UnityEngine.UI; // required when using UI elements in scripts
+        ///
+        /// public class Example : MonoBehaviour
+        /// {
+        ///     public Button startButton;
+        ///
+        ///     void Update()
+        ///     {
+        ///         if (!startButton.IsInteractable())
+        ///         {
+        ///             Debug.Log("Start Button has been Disabled");
+        ///         }
+        ///     }
+        /// }
+        /// </code>
+        /// </example>
+        public virtual bool IsInteractable()
         {
             return m_GroupsAllowInteraction && m_Interactable;
         }
 
         // Call from unity if animation properties have changed
-        protected virtual void OnDidApplyAnimationProperties()
+        protected override void OnDidApplyAnimationProperties()
         {
             OnSetProperty();
         }
 
         // Select on enable and add to the list.
-        protected virtual void OnEnable()
+        protected override void OnEnable()
         {
             //Check to avoid multiple OnEnable() calls for each selectable
             if (m_EnableCalled)
                 return;
 
-            //base.OnEnable();
+            base.OnEnable();
 
             if (s_SelectableCount == s_Selectables.Length)
             {
-                InGameSelectable[] temp = new InGameSelectable[s_Selectables.Length * 2];
+                BaseSelectable[] temp = new BaseSelectable[s_Selectables.Length * 2];
                 Array.Copy(s_Selectables, temp, s_Selectables.Length);
                 s_Selectables = temp;
             }
@@ -165,6 +509,14 @@ namespace HereBeElements.Internal
             DoStateTransition(currentSelectionState, true);
 
             m_EnableCalled = true;
+        }
+
+        protected override void OnTransformParentChanged()
+        {
+            base.OnTransformParentChanged();
+
+            // If our parenting changes figure out if we are under a new CanvasGroup.
+            OnCanvasGroupChanged();
         }
 
         private void OnSetProperty()
@@ -178,7 +530,7 @@ namespace HereBeElements.Internal
         }
 
         // Remove from the list.
-        protected virtual void OnDisable()
+        protected override void OnDisable()
         {
             //Check to avoid multiple OnDisable() calls for each selectable
             if (!m_EnableCalled)
@@ -196,16 +548,15 @@ namespace HereBeElements.Internal
             s_Selectables[s_SelectableCount] = null;
 
             InstantClearState();
+            base.OnDisable();
 
             m_EnableCalled = false;
         }
 
 #if UNITY_EDITOR
-        protected virtual void OnValidate()
+        protected override void OnValidate()
         {
-            //base.OnValidate();
-            if (_sc == null)
-                _sc = GetComponent<ShaderControl>();
+            base.OnValidate();
             m_Colors.fadeDuration = Mathf.Max(m_Colors.fadeDuration, 0.0f);
 
             // OnValidate can be called before OnEnable, this makes it unsafe to access other components
@@ -216,7 +567,7 @@ namespace HereBeElements.Internal
                 if (!interactable && EventSystem.current != null && EventSystem.current.currentSelectedGameObject == gameObject)
                     EventSystem.current.SetSelectedGameObject(null);
                 // Need to clear out the override image on the target...
-                //DoSpriteSwap(null);
+                DoSpriteSwap(null);
 
                 // If the transition mode got changed, we need to clear all the transitions, since we don't know what the old transition mode was.
                 StartColorTween(Color.white, true);
@@ -227,14 +578,14 @@ namespace HereBeElements.Internal
             }
         }
 
-        protected virtual void Reset()
+        protected override void Reset()
         {
-            m_TargetGraphic = GetComponent<SpriteRenderer>();
+            m_TargetGraphic = GetComponent<Graphic>();
         }
 
 #endif // if UNITY_EDITOR
 
-        protected virtual SelectionState currentSelectionState
+        protected SelectionState currentSelectionState
         {
             get
             {
@@ -251,7 +602,7 @@ namespace HereBeElements.Internal
         }
 
         /// <summary>
-        /// Clear any internal state from the Selectable (used when disabling).
+        /// Clear any internal state from the BaseSelectable (used when disabling).
         /// </summary>
         protected virtual void InstantClearState()
         {
@@ -263,20 +614,20 @@ namespace HereBeElements.Internal
 
             switch (m_Transition)
             {
-                case Selectable.Transition.ColorTint:
+                case Transition.ColorTint:
                     StartColorTween(Color.white, true);
                     break;
-                case Selectable.Transition.SpriteSwap:
+                case Transition.SpriteSwap:
                     DoSpriteSwap(null);
                     break;
-                case Selectable.Transition.Animation:
+                case Transition.Animation:
                     TriggerAnimation(triggerName);
                     break;
             }
         }
 
         /// <summary>
-        /// Transition the Selectable to the entered state.
+        /// Transition the BaseSelectable to the entered state.
         /// </summary>
         /// <param name="state">State to transition to</param>
         /// <param name="instant">Should the transition occur instantly.</param>
@@ -325,13 +676,13 @@ namespace HereBeElements.Internal
 
             switch (m_Transition)
             {
-                case Selectable.Transition.ColorTint:
+                case Transition.ColorTint:
                     StartColorTween(tintColor * m_Colors.colorMultiplier, instant);
                     break;
-                case Selectable.Transition.SpriteSwap:
+                case Transition.SpriteSwap:
                     DoSpriteSwap(transitionSprite);
                     break;
-                case Selectable.Transition.Animation:
+                case Transition.Animation:
                     TriggerAnimation(triggerName);
                     break;
             }
@@ -376,8 +727,8 @@ namespace HereBeElements.Internal
         /// <remarks>
         /// The direction is determined by a Vector3 variable.
         /// </remarks>
-        /// <param name="dir">The direction in which to search for a neighbouring Selectable object.</param>
-        /// <returns>The neighbouring Selectable object. Null if none found.</returns>
+        /// <param name="dir">The direction in which to search for a neighbouring BaseSelectable object.</param>
+        /// <returns>The neighbouring BaseSelectable object. Null if none found.</returns>
         /// <example>
         /// <code>
         /// using UnityEngine;
@@ -393,24 +744,24 @@ namespace HereBeElements.Internal
         ///     public void Start()
         ///     {
         ///         //Finds and assigns the selectable above the main button
-        ///         Selectable newSelectable = btnMain.FindSelectable(direction);
+        ///         BaseSelectable newSelectable = btnMain.FindSelectable(direction);
         ///
         ///         Debug.Log(newSelectable.name);
         ///     }
         /// }
         /// </code>
         /// </example>
-        public InGameSelectable FindSelectable(Vector3 dir)
+        public BaseSelectable FindSelectable(Vector3 dir)
         {
             dir = dir.normalized;
             Vector3 localDir = Quaternion.Inverse(transform.rotation) * dir;
             Vector3 pos = transform.TransformPoint(GetPointOnRectEdge(transform as RectTransform, localDir));
             float maxScore = Mathf.NegativeInfinity;
-            InGameSelectable bestPick = null;
+            BaseSelectable bestPick = null;
 
             for (int i = 0; i < s_SelectableCount; ++i)
             {
-                InGameSelectable sel = s_Selectables[i];
+                BaseSelectable sel = s_Selectables[i];
 
                 if (sel == this)
                     continue;
@@ -451,7 +802,7 @@ namespace HereBeElements.Internal
                 // If a given score is chosen, the positions that evaluate to that score will form a circle
                 // that touches pos and whose center is located along dir. A way to visualize the resulting functionality is this:
                 // From the position pos, blow up a circular balloon so it grows in the direction of dir.
-                // The first Selectable whose center the circular balloon touches is the one that's chosen.
+                // The first BaseSelectable whose center the circular balloon touches is the one that's chosen.
                 float score = dot / myVector.sqrMagnitude;
 
                 if (score > maxScore)
@@ -476,7 +827,7 @@ namespace HereBeElements.Internal
         // Convenience function -- change the selection to the specified object if it's not null and happens to be active.
         void Navigate(AxisEventData eventData, ISelectable sel)
         {
-            if (sel != null /*&& sel.IsActive()*/)
+            if (sel != null && sel.IsActive())
                 eventData.selectedObject = sel.GetGameObject();
         }
 
@@ -497,7 +848,7 @@ namespace HereBeElements.Internal
         ///     public void IgnoreSelectables()
         ///     {
         ///         //Finds the selectable UI element to the left the start button and assigns it to a variable of type "Selectable"
-        ///         Selectable secondButton = startButton.FindSelectableOnLeft();
+        ///         BaseSelectable secondButton = startButton.FindSelectableOnLeft();
         ///         //Disables interaction with the selectable UI element
         ///         secondButton.interactable = false;
         ///     }
@@ -517,11 +868,6 @@ namespace HereBeElements.Internal
             return null;
         }
 
-        public GameObject GetGameObject()
-        {
-            return gameObject;
-        }
-
         /// <summary>
         /// Find the selectable object to the right of this one.
         /// </summary>
@@ -539,7 +885,7 @@ namespace HereBeElements.Internal
         ///     public void IgnoreSelectables()
         ///     {
         ///         //Finds the selectable UI element to the right the start button and assigns it to a variable of type "Selectable"
-        ///         Selectable secondButton = startButton.FindSelectableOnRight();
+        ///         BaseSelectable secondButton = startButton.FindSelectableOnRight();
         ///         //Disables interaction with the selectable UI element
         ///         secondButton.interactable = false;
         ///     }
@@ -560,7 +906,7 @@ namespace HereBeElements.Internal
         }
 
         /// <summary>
-        /// The Selectable object above current
+        /// The BaseSelectable object above current
         /// </summary>
         /// <example>
         /// <code>
@@ -576,7 +922,7 @@ namespace HereBeElements.Internal
         ///     public void IgnoreSelectables()
         ///     {
         ///         //Finds the selectable UI element above the start button and assigns it to a variable of type "Selectable"
-        ///         Selectable secondButton = startButton.FindSelectableOnUp();
+        ///         BaseSelectable secondButton = startButton.FindSelectableOnUp();
         ///         //Disables interaction with the selectable UI element
         ///         secondButton.interactable = false;
         ///     }
@@ -613,7 +959,7 @@ namespace HereBeElements.Internal
         ///     public void IgnoreSelectables()
         ///     {
         ///         //Finds the selectable UI element below the start button and assigns it to a variable of type "Selectable"
-        ///         Selectable secondButton = startButton.FindSelectableOnDown();
+        ///         BaseSelectable secondButton = startButton.FindSelectableOnDown();
         ///         //Disables interaction with the selectable UI element
         ///         secondButton.interactable = false;
         ///     }
@@ -685,38 +1031,15 @@ namespace HereBeElements.Internal
             if (m_TargetGraphic == null)
                 return;
 
-            CrossFadeColor(targetColor, instant ? 0f : m_Colors.fadeDuration, true, true, true);
-        }
-        
-        public virtual void CrossFadeColor(Color targetColor, float duration, bool ignoreTimeScale, bool useAlpha, bool useRGB)
-        {
-            if (m_TargetGraphic == null || (!useRGB && !useAlpha))
-                return;
-
-            Color currentColor = _sc.TintColor;
-            if (currentColor.Equals(targetColor))
-            {
-                m_ColorTweenRunner.StopTween();
-                return;
-            }
-
-            ColorTween.ColorTweenMode mode = (useRGB && useAlpha ?
-                ColorTween.ColorTweenMode.All :
-                (useRGB ? ColorTween.ColorTweenMode.RGB : ColorTween.ColorTweenMode.Alpha));
-
-            var colorTween = new ColorTween {duration = duration, startColor = _sc.TintColor, targetColor = targetColor};
-            colorTween.AddOnChangedCallback((c) => _sc.TintColor = c);
-            colorTween.ignoreTimeScale = ignoreTimeScale;
-            colorTween.tweenMode = mode;
-            m_ColorTweenRunner.StartTween(colorTween);
+            m_TargetGraphic.CrossFadeColor(targetColor, instant ? 0f : m_Colors.fadeDuration, true, true);
         }
 
         void DoSpriteSwap(Sprite newSprite)
         {
-            if (m_TargetGraphic == null)
+            if (image == null)
                 return;
-            
-            m_TargetGraphic.sprite = newSprite;
+
+            image.overrideSprite = newSprite;
         }
 
         void TriggerAnimation(string triggername)
@@ -735,10 +1058,42 @@ namespace HereBeElements.Internal
 #endif
         }
 
-       
+        /// <summary>
+        /// Returns whether the selectable is currently 'highlighted' or not.
+        /// </summary>
+        /// <remarks>
+        /// Use this to check if the selectable UI element is currently highlighted.
+        /// </remarks>
+        /// <example>
+        /// <code>
+        /// //Create a UI element. To do this go to Create>UI and select from the list. Attach this script to the UI GameObject to see this script working. The script also works with non-UI elements, but highlighting works better with UI.
+        ///
+        /// using UnityEngine;
+        /// using UnityEngine.Events;
+        /// using UnityEngine.EventSystems;
+        /// using UnityEngine.UI;
+        ///
+        /// //Use the BaseSelectable class as a base class to access the IsHighlighted method
+        /// public class Example : BaseSelectable
+        /// {
+        ///     //Use this to check what Events are happening
+        ///     BaseEventData m_BaseEvent;
+        ///
+        ///     void Update()
+        ///     {
+        ///         //Check if the GameObject is being highlighted
+        ///         if (IsHighlighted())
+        ///         {
+        ///             //Output that the GameObject was highlighted, or do something else
+        ///             Debug.Log("Selectable is Highlighted");
+        ///         }
+        ///     }
+        /// }
+        /// </code>
+        /// </example>
         protected bool IsHighlighted()
         {
-            if (!IsInteractable())
+            if (!IsActive() || !IsInteractable())
                 return false;
             return isPointerInside && !isPointerDown && !hasSelection;
         }
@@ -748,7 +1103,7 @@ namespace HereBeElements.Internal
         /// </summary>
         protected bool IsPressed()
         {
-            if (!IsInteractable())
+            if (!IsActive() || !IsInteractable())
                 return false;
             return isPointerDown;
         }
@@ -756,13 +1111,32 @@ namespace HereBeElements.Internal
         // Change the button to the correct state
         private void EvaluateAndTransitionToSelectionState()
         {
-            if (!IsInteractable())
+            if (!IsActive() || !IsInteractable())
                 return;
 
             DoStateTransition(currentSelectionState, false);
         }
 
-     
+        /// <summary>
+        /// Evaluate current state and transition to pressed state.
+        /// </summary>
+        /// <example>
+        /// <code>
+        /// using UnityEngine;
+        /// using System.Collections;
+        /// using UnityEngine.UI;
+        /// using UnityEngine.EventSystems;// Required when using Event data.
+        ///
+        /// public class ExampleClass : MonoBehaviour, IPointerDownHandler// required interface when using the OnPointerDown method.
+        /// {
+        ///     //Do this when the mouse is clicked over the selectable object this script is attached to.
+        ///     public void OnPointerDown(PointerEventData eventData)
+        ///     {
+        ///         Debug.Log(this.gameObject.name + " Was Clicked.");
+        ///     }
+        /// }
+        /// </code>
+        /// </example>
         public virtual void OnPointerDown(PointerEventData eventData)
         {
             if (eventData.button != PointerEventData.InputButton.Left)
@@ -776,7 +1150,31 @@ namespace HereBeElements.Internal
             EvaluateAndTransitionToSelectionState();
         }
 
-      
+        /// <summary>
+        /// Evaluate eventData and transition to appropriate state.
+        /// </summary>
+        /// <example>
+        /// <code>
+        /// using UnityEngine;
+        /// using System.Collections;
+        /// using UnityEngine.UI;
+        /// using UnityEngine.EventSystems;// Required when using Event data.
+        ///
+        /// public class ExampleClass : MonoBehaviour, IPointerUpHandler, IPointerDownHandler// These are the interfaces the OnPointerUp method requires.
+        /// {
+        ///     //OnPointerDown is also required to receive OnPointerUp callbacks
+        ///     public void OnPointerDown(PointerEventData eventData)
+        ///     {
+        ///     }
+        ///
+        ///     //Do this when the mouse click on this selectable UI object is released.
+        ///     public void OnPointerUp(PointerEventData eventData)
+        ///     {
+        ///         Debug.Log("The mouse click was released");
+        ///     }
+        /// }
+        /// </code>
+        /// </example>
         public virtual void OnPointerUp(PointerEventData eventData)
         {
             if (eventData.button != PointerEventData.InputButton.Left)
@@ -786,35 +1184,133 @@ namespace HereBeElements.Internal
             EvaluateAndTransitionToSelectionState();
         }
 
-        
+        /// <summary>
+        /// Evaluate current state and transition to appropriate state.
+        /// New state could be pressed or hover depending on pressed state.
+        /// </summary>
+        /// <example>
+        /// <code>
+        /// using UnityEngine;
+        /// using System.Collections;
+        /// using UnityEngine.UI;
+        /// using UnityEngine.EventSystems;// Required when using Event data.
+        ///
+        /// public class ExampleClass : MonoBehaviour, IPointerEnterHandler// required interface when using the OnPointerEnter method.
+        /// {
+        ///     //Do this when the cursor enters the rect area of this selectable UI object.
+        ///     public void OnPointerEnter(PointerEventData eventData)
+        ///     {
+        ///         Debug.Log("The cursor entered the selectable UI element.");
+        ///     }
+        /// }
+        /// </code>
+        /// </example>
         public virtual void OnPointerEnter(PointerEventData eventData)
         {
             isPointerInside = true;
             EvaluateAndTransitionToSelectionState();
         }
 
-     
+        /// <summary>
+        /// Evaluate current state and transition to normal state.
+        /// </summary>
+        /// <example>
+        /// <code>
+        /// using UnityEngine;
+        /// using System.Collections;
+        /// using UnityEngine.UI;
+        /// using UnityEngine.EventSystems;// Required when using Event data.
+        ///
+        /// public class ExampleClass : MonoBehaviour, IPointerExitHandler// required interface when using the OnPointerExit method.
+        /// {
+        ///     //Do this when the cursor exits the rect area of this selectable UI object.
+        ///     public void OnPointerExit(PointerEventData eventData)
+        ///     {
+        ///         Debug.Log("The cursor exited the selectable UI element.");
+        ///     }
+        /// }
+        /// </code>
+        /// </example>
         public virtual void OnPointerExit(PointerEventData eventData)
         {
             isPointerInside = false;
             EvaluateAndTransitionToSelectionState();
         }
 
-    
+        /// <summary>
+        /// Set selection and transition to appropriate state.
+        /// </summary>
+        /// <example>
+        /// <code>
+        /// using UnityEngine;
+        /// using System.Collections;
+        /// using UnityEngine.UI;
+        /// using UnityEngine.EventSystems;// Required when using Event data.
+        ///
+        /// public class ExampleClass : MonoBehaviour, ISelectHandler// required interface when using the OnSelect method.
+        /// {
+        ///     //Do this when the selectable UI object is selected.
+        ///     public void OnSelect(BaseEventData eventData)
+        ///     {
+        ///         Debug.Log(this.gameObject.name + " was selected");
+        ///     }
+        /// }
+        /// </code>
+        /// </example>
         public virtual void OnSelect(BaseEventData eventData)
         {
             hasSelection = true;
             EvaluateAndTransitionToSelectionState();
         }
 
-      
+        /// <summary>
+        /// Unset selection and transition to appropriate state.
+        /// </summary>
+        /// <example>
+        /// <code>
+        /// using UnityEngine;
+        /// using System.Collections;
+        /// using UnityEngine.UI;
+        /// using UnityEngine.EventSystems;// Required when using Event data.
+        ///
+        /// public class ExampleClass : MonoBehaviour, IDeselectHandler //This Interface is required to receive OnDeselect callbacks.
+        /// {
+        ///     public void OnDeselect(BaseEventData data)
+        ///     {
+        ///         Debug.Log("Deselected");
+        ///     }
+        /// }
+        /// </code>
+        /// </example>
         public virtual void OnDeselect(BaseEventData eventData)
         {
             hasSelection = false;
             EvaluateAndTransitionToSelectionState();
         }
 
-     
+        /// <summary>
+        /// Selects this Selectable.
+        /// </summary>
+        /// <example>
+        /// <code>
+        /// using UnityEngine;
+        /// using System.Collections;
+        /// using UnityEngine.UI; // required when using UI elements in scripts
+        /// using UnityEngine.EventSystems;// Required when using Event data.
+        ///
+        /// public class ExampleClass : MonoBehaviour// required interface when using the OnSelect method.
+        /// {
+        ///     public InputField myInputField;
+        ///
+        ///     //Do this OnClick.
+        ///     public void SaveGame()
+        ///     {
+        ///         //Makes the Input Field the selected UI Element.
+        ///         myInputField.Select();
+        ///     }
+        /// }
+        /// </code>
+        /// </example>
         public virtual void Select()
         {
             if (EventSystem.current == null || EventSystem.current.alreadySelecting)
@@ -822,13 +1318,13 @@ namespace HereBeElements.Internal
 
             EventSystem.current.SetSelectedGameObject(gameObject);
         }
-
-        public IEnumerator LoadContent<T>(AssetReference assetRef, Action<T> setter, Action<float> percentageSetter = null)
+        
+        public virtual IEnumerator LoadContent<T>(AssetReference assetRef, Action<T> setter, Action<float> percentageSetter = null)
         {
             return Utils.LoadContent(assetRef, setter, percentageSetter);
         }
         
-        public void LoadAsset<T>(AssetReference assetRef, Action<T> setter)
+        public virtual void LoadAsset<T>(AssetReference assetRef, Action<T> setter)
         {
             Utils.LoadAsset(assetRef, setter);
         }

@@ -15,7 +15,7 @@ namespace HereBeElements.Internal
         
         private static Regex JSON_KEY_CLEANER = new Regex("\\n\\s*");
         
-        internal static IEnumerator LoadContent<T>(AssetReference assetRef, Action<T> setter, Action<float> percentageSetter = null)
+        public static IEnumerator LoadContent<T>(AssetReference assetRef, Action<T> setter, Action<float> percentageSetter = null)
         {
             AsyncOperationHandle<T> loadProcess = assetRef.LoadAssetAsync<T>();
             if (percentageSetter != null)
@@ -33,7 +33,7 @@ namespace HereBeElements.Internal
             
         }
         
-        internal static void LoadAsset<T>(AssetReference assetRef, Action<T> setter)
+        public static void LoadAsset<T>(AssetReference assetRef, Action<T> setter)
         {
             AsyncOperationHandle<T> loadProcess = assetRef.LoadAssetAsync<T>();
 

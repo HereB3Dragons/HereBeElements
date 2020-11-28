@@ -33,7 +33,8 @@ namespace HereBeElements
 
         public virtual void Show(bool onOff = true)
         {
-            _sc.Opacity = onOff ? 1 : 0;
+            if (_sc != null)
+                _sc.Opacity = onOff ? 1 : 0;
             _isHighlight = onOff;
         }
 
@@ -97,7 +98,8 @@ namespace HereBeElements
             if (_sc == null)
                 _sc = GetComponent<ShaderControl>();
             base.OnValidate();
-            ApplyShaderConfig();
+            if (_sc != null)
+                ApplyShaderConfig();
         }
 #endif
 
@@ -228,7 +230,7 @@ namespace HereBeElements
             }
         }
 
-        public IEnumerator MoveTo(Vector3 destination, Action callback = null, float duration = 1.5f, Action<float> progress = null)
+        public virtual IEnumerator MoveTo(Vector3 destination, Action callback = null, float duration = 1.5f, Action<float> progress = null)
         {
             if (_transform == null)
                 yield break;

@@ -9,10 +9,7 @@ namespace HereBeElements.Internal
     [Serializable]
     public class UISelectable : Selectable
     {
-        protected UISelectable()
-        {
-            mm_Colors = UIColorBlock.FromColorBlock(colors);
-        }
+        
         protected override void DoStateTransition(SelectionState state, bool instant)
         {
             if (!gameObject.activeInHierarchy)
@@ -146,12 +143,12 @@ namespace HereBeElements.Internal
                 DoStateTransition(currentSelectionState, false);
         }
         
-        public IEnumerator LoadContent<T>(AssetReference assetRef, Action<T> setter, Action<float> percentageSetter = null)
+        public virtual IEnumerator LoadContent<T>(AssetReference assetRef, Action<T> setter, Action<float> percentageSetter = null)
         {
             return Utils.LoadContent(assetRef, setter, percentageSetter);
         }
         
-        public void LoadAsset<T>(AssetReference assetRef, Action<T> setter)
+        public virtual void LoadAsset<T>(AssetReference assetRef, Action<T> setter)
         {
             Utils.LoadAsset(assetRef, setter);
         }

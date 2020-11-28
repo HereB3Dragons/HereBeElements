@@ -17,8 +17,8 @@ namespace HereBeElements
     {
         protected ShaderControl _sc;
         protected Graphic _graphic;
-        private bool _isHighlight = false;
-        private bool _isVisible = true;
+        protected bool _isHighlight = false;
+        protected bool _isVisible = true;
         protected RectTransform _transform;
 
         public bool IsVisible()
@@ -101,7 +101,8 @@ namespace HereBeElements
             if (_sc == null)
                 _sc = GetComponent<ShaderControl>();
             base.OnValidate();
-            ApplyShaderConfig();
+            if (_sc != null)
+                ApplyShaderConfig();
         }
 #endif
         public void ApplyShaderConfig()

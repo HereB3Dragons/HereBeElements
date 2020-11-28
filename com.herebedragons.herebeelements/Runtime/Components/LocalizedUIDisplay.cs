@@ -17,7 +17,7 @@ namespace HereBeElements
 
         public override void Show(string text = null)
         {
-            if (isLocalized)
+            if (isLocalized && textKeys.Length > 0)
                 text = Locale<T>.GetText(textKeys[0]);
             base.Show(text + separator);
         }
@@ -43,5 +43,10 @@ namespace HereBeElements
             Show(text);
         }
 #endif
+        protected override void OnDisable()
+        {
+            base.OnDisable();
+            Locale<T>.ChangeLanguageEvent -= Clear; 
+        }
     }
 }
