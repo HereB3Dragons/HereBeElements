@@ -120,7 +120,7 @@ namespace HereBeElements
 
         public delegate void EnableEventHandler();
 
-        public event EnableEventHandler EnableEvent;
+        public EnableEventHandler EnableEvent;
 
         protected override void OnEnable()
         {
@@ -135,7 +135,7 @@ namespace HereBeElements
 
         public delegate void DisableEventHandler();
 
-        public event DisableEventHandler DisableEvent;
+        public DisableEventHandler DisableEvent;
 
         protected override void OnDisable()
         {
@@ -150,15 +150,15 @@ namespace HereBeElements
 
         public delegate void HighlightEventHandler();
 
-        public event HighlightEventHandler HighlightEvent;
+        public HighlightEventHandler HighlightEvent;
 
         public delegate void DeHighlightEventHandler();
 
-        public event DeHighlightEventHandler DeHighlightEvent;
+        public DeHighlightEventHandler DeHighlightEvent;
 
         public delegate void SelectEventHandler();
 
-        public event SelectEventHandler SelectEvent;
+        public SelectEventHandler SelectEvent;
 
         public override void OnSelect(BaseEventData eventData)
         {

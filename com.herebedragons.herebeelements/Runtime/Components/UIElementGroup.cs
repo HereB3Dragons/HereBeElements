@@ -19,12 +19,19 @@ namespace HereBeElements
 
         public override void Show(bool onOff = true)
         {
-            _cg.alpha = onOff ? 1 : 0;
+            GetCanvas().alpha = onOff ? 1 : 0;
         }
 
         public override void Enable(bool onOff = true)
         {
-            _cg.interactable = onOff;
+            GetCanvas().interactable = onOff;
+        }
+
+        private CanvasGroup GetCanvas()
+        {
+            if (_cg == null)
+                _cg = GetComponent<CanvasGroup>();
+            return _cg;
         }
 
 

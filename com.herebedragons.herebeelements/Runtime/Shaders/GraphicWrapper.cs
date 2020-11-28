@@ -36,17 +36,20 @@ namespace HereBeElements.Shaders
 
         public void SetInt(int key, int value)
         {
-            _graphic.material.SetInt(key, value);
+            if (_graphic != null)
+                _graphic.material.SetInt(key, value);
         }
 
         public void SetColor(int key, Color color)
         {
-            _graphic.color = color;
+            if (_graphic != null)
+                _graphic.color = color;
         }
 
         public void SetFloat(int key, float value)
         {
-            _graphic.material.SetFloat(key, value);
+            if (_graphic != null)
+                _graphic.material.SetFloat(key, value);
         }
 
         public void SetAlpha(float value)
