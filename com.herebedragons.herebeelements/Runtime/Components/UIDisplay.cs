@@ -16,10 +16,14 @@ namespace HereBeElements
 
         public string text;
 
+        public string format = "";
+
         protected override void Awake()
         {
             base.Awake();
             _text = GetComponent<Text>();
+            if (_text == null)
+                _text = GetComponentInChildren<Text>();
         }
 
         public virtual void Show(string text)
@@ -34,7 +38,7 @@ namespace HereBeElements
 
         public virtual void Show(long value)
         {
-            Show(value.ToString());
+            Show(value.ToString(format));
         }
 
         public virtual void Clear()

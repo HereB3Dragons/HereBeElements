@@ -35,7 +35,7 @@ namespace HereBeElements
         {
             if (_sc != null)
                 _sc.Opacity = onOff ? 1 : 0;
-            _isHighlight = onOff;
+            _isVisible = onOff;
         }
 
         public virtual void Hide()

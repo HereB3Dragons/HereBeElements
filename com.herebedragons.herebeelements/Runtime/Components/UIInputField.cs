@@ -1495,7 +1495,7 @@ namespace HereBeElements
                 return;
 
             Vector2 position = Vector2.zero;
-            if (!MultipleDisplayUtilities.GetRelativeMousePositionForDrag(eventData, ref position))
+            if (!MultipleDisplayCapabilities.GetRelativeMousePositionForDrag(eventData, ref position))
                 return;
 
             Vector2 localMousePos;
@@ -1516,7 +1516,7 @@ namespace HereBeElements
             while (m_UpdateDrag && m_DragPositionOutOfBounds)
             {
                 Vector2 position = Vector2.zero;
-                if (!MultipleDisplayUtilities.GetRelativeMousePositionForDrag(eventData, ref position))
+                if (!MultipleDisplayCapabilities.GetRelativeMousePositionForDrag(eventData, ref position))
                     break;
 
                 Vector2 localMousePos;

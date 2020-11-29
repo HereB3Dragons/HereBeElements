@@ -19,12 +19,15 @@ namespace HereBeElements
 
         public override void Show(bool onOff = true)
         {
-            GetCanvas().alpha = onOff ? 1 : 0;
+            float a = onOff ? 1 : 0;
+            if (GetCanvas().alpha != a)
+                GetCanvas().alpha = a;
         }
 
         public override void Enable(bool onOff = true)
         {
-            GetCanvas().interactable = onOff;
+            if (GetCanvas().interactable != onOff)
+                GetCanvas().interactable = onOff;
         }
 
         private CanvasGroup GetCanvas()
@@ -47,6 +50,10 @@ namespace HereBeElements
             foreach (UIElement child in _children)
                 action.Invoke(child);
         }
-        
+
+        protected override void OnDisable()
+        {
+            base.OnDisable();
+        }
     }
 }

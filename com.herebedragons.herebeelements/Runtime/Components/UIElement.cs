@@ -28,9 +28,10 @@ namespace HereBeElements
 
         public virtual void Show(bool onOff = true)
         {
+            if (onOff == _isVisible) return;
             if (_sc != null)
                 _sc.Opacity = onOff ? 1 : 0;
-            _isHighlight = onOff;
+            _isVisible = onOff;
         }
 
         public virtual void Hide()
@@ -38,13 +39,14 @@ namespace HereBeElements
             Show(false);
         }
 
-        public bool IsEnabled()
+        public virtual bool IsEnabled()
         {
             return IsInteractable();
         }
 
         public virtual void Enable(bool onOff = true)
         {
+            if (IsEnabled() == onOff) return;
             this.interactable = onOff;
         }
 
@@ -203,6 +205,9 @@ namespace HereBeElements
             if (eventData.button != PointerEventData.InputButton.Left)
                 return;
 
+            if (!IsInteractable())
+                return;
+            
             ClickEventHandler click = ClickEvent;
             if (click != null)
             {
@@ -255,5 +260,7 @@ namespace HereBeElements
             if (callback != null)
                 callback.Invoke();
         }
+        
+        
     }
 }

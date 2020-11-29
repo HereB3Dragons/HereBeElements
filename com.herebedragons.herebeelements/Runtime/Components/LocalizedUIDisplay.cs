@@ -40,7 +40,6 @@ namespace HereBeElements
         protected override void OnValidate()
         {
             base.OnValidate();
-            Show(text);
         }
 #endif
         protected override void OnDisable()

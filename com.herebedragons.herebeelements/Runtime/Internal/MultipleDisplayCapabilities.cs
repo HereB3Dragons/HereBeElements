@@ -3,7 +3,7 @@ using UnityEngine.EventSystems;
 
 namespace HereBeElements.Internal
 {
-    internal static class MultipleDisplayUtilities
+    internal static class MultipleDisplayCapabilities
     {
         /// <summary>
         /// Converts the current drag position into a relative position for the display.
