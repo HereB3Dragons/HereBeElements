@@ -205,10 +205,14 @@ namespace com.herebedragons.herebeelements.Editor
             FieldInfo[] childFields = target.GetType().GetFields(BindingFlags.DeclaredOnly | BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
             foreach (FieldInfo field in childFields)
             {
-                if (field.IsPublic || field.GetCustomAttribute(typeof(SerializeField)) != null)
-                {
-                    EditorGUILayout.PropertyField(serializedObject.FindProperty(field.Name));
-                }
+				try {
+                	if (field.IsPublic || field.GetCustomAttribute(typeof(SerializeField)) != null)
+                	{
+                    	EditorGUILayout.PropertyField(serializedObject.FindProperty(field.Name));
+                	}
+				} catch (Exception e){
+					Debug.LogError(e);
+				}
             }
         }
 
