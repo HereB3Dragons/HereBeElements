@@ -2,7 +2,8 @@
     "name": "Unity.HereBeElements",
     "references": [
         "Unity.Addressables",
-        "Unity.ResourceManager"
+        "Unity.ResourceManager",
+        "Unity.HereBeJSON"
     ],
     "includePlatforms": [],
     "allowUnsafeCode": false,

@@ -50,8 +50,8 @@ namespace HereBeElements
 
         public virtual void Enable(bool onOff = true)
         {
-            if (onOff != this.IsInteractable())
-                this.interactable = onOff;
+            if (onOff != IsInteractable())
+                interactable = onOff;
         }
 
         public virtual void Disable()
@@ -235,7 +235,7 @@ namespace HereBeElements
             if (_transform == null)
                 yield break;
             
-            Vector3 origin = _transform.position;
+            Vector3 origin = _transform.localPosition;
             float journey = 0f;
 
             while (journey <= duration)
@@ -243,7 +243,7 @@ namespace HereBeElements
                 journey += Time.deltaTime;
                 float percent = Mathf.Clamp01(journey / duration);
                 if (_transform == null) break;
-                _transform.position = Vector3.Lerp(origin, destination, Mathf.SmoothStep(0.0f, 1.0f, percent));
+                _transform.localPosition = Vector3.Lerp(origin, destination, Mathf.SmoothStep(0.0f, 1.0f, percent));
                 if (progress != null)
                     progress.Invoke(percent);
                 yield return null;

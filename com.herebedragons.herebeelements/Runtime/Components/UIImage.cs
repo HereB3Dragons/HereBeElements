@@ -13,7 +13,6 @@ using UnityEditor;
 
 namespace HereBeElements
 {
-    [CanEditMultipleObjects]
     [RequireComponent(typeof(ShaderControl))]
     public class UIImage : Image, ILoadable
     {
