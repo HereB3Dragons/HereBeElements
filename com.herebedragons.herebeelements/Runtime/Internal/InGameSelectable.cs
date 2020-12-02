@@ -690,7 +690,7 @@ namespace HereBeElements.Internal
         
         public virtual void CrossFadeColor(Color targetColor, float duration, bool ignoreTimeScale, bool useAlpha, bool useRGB)
         {
-            if (m_TargetGraphic == null || (!useRGB && !useAlpha))
+            if (m_TargetGraphic == null || _sc == null || (!useRGB && !useAlpha))
                 return;
 
             Color currentColor = _sc.TintColor;
