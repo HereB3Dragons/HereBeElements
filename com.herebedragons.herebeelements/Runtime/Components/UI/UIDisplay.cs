@@ -4,7 +4,7 @@ using HereBeElements.Templates;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace HereBeElements
+namespace HereBeElements.UI
 {
     [RequireComponent(typeof(Text))]
     [Serializable]

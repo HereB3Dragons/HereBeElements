@@ -4,14 +4,13 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using HereBeElements.Internal;
-using Internal;
 using UnityEditor;
 using UnityEditor.AnimatedValues;
 using UnityEditor.UI;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace com.herebedragons.herebeelements.Editor
+namespace HereBeElements.Editor
 {
     [CustomEditor(typeof(InGameSelectable), true)]
     [CanEditMultipleObjects]
@@ -211,9 +210,10 @@ namespace com.herebedragons.herebeelements.Editor
                 	{
                     	EditorGUILayout.PropertyField(serializedObject.FindProperty(field.Name));
                 	}
-				} catch (Exception e){
-					Debug.LogError(e);
-				}
+				} catch (Exception e)
+                {
+                    continue;
+                }
             }
         }
 

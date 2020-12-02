@@ -2,7 +2,7 @@
 using UnityEditor;
 using UnityEngine;
 
-namespace com.herebedragons.herebeelements.Editor
+namespace HereBeElements.Editor
 {
     
     [CustomEditor(typeof(ShaderControl))]

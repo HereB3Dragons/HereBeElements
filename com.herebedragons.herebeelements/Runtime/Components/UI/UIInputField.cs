@@ -11,7 +11,7 @@ using UnityEngine.UI;
 #if UNITY_EDITOR
 #endif
 
-namespace HereBeElements
+namespace HereBeElements.UI
 {
     [AddComponentMenu("UI/InputFieldEditor")]
     public class UIInputField: UIElementGroup,

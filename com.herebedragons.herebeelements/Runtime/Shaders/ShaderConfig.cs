@@ -32,19 +32,17 @@ namespace HereBeElements.Shaders
         public bool isStatic = true;
 
         // Base
-        internal static readonly int Opacity = Shader.PropertyToID("opacity");
-        internal static readonly int AlphaClip = Shader.PropertyToID("alphaClip");
-        internal static readonly int TintColor = Shader.PropertyToID("_Color");
+        public static readonly int Opacity = Shader.PropertyToID("opacity");
+        public static readonly int AlphaClip = Shader.PropertyToID("alphaClip");
+        public static readonly int TintColor = Shader.PropertyToID("_Color");
 
         // Border
-        internal static readonly int Border = Shader.PropertyToID("border");
-        internal static readonly int BorderWidth = Shader.PropertyToID("borderWidth");
-        internal static readonly int BorderColor = Shader.PropertyToID("borderColor");
+        public static readonly int Border = Shader.PropertyToID("border");
+        public static readonly int BorderWidth = Shader.PropertyToID("borderWidth");
+        public static readonly int BorderColor = Shader.PropertyToID("borderColor");
         
         [SerializeField]
         private Material material;
-        
-        
 
         void CloneMaterial(Renderer renderer)
         {

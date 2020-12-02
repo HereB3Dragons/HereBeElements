@@ -585,7 +585,7 @@ namespace HereBeElements.Internal
 
 #endif // if UNITY_EDITOR
 
-        protected SelectionState currentSelectionState
+        protected virtual SelectionState currentSelectionState
         {
             get
             {

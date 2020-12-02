@@ -7,11 +7,8 @@ using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.UI;
 
-#if UNITY_EDITOR
-using UnityEditor;
-#endif
 
-namespace HereBeElements
+namespace HereBeElements.UI
 {
     [RequireComponent(typeof(ShaderControl))]
     public class UIImage : Image, ILoadable

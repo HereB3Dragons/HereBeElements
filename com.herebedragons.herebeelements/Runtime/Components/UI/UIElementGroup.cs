@@ -2,7 +2,7 @@
 using HereBeElements.Internal;
 using UnityEngine;
 
-namespace HereBeElements
+namespace HereBeElements.UI
 {
     [RequireComponent(typeof(CanvasGroup))]
     public class UIElementGroup : UIElement

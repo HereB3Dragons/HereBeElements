@@ -4,7 +4,7 @@ using UnityEditor.AnimatedValues;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace com.herebedragons.herebeelements.Editor
+namespace HereBeElements.Editor
 {
     public class UIGraphicEditor : UnityEditor.Editor
     {

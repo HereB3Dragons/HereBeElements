@@ -1,7 +1,7 @@
 ﻿using UnityEditor;
 using UnityEngine;
 
-namespace Internal
+namespace HereBeElements.Editor
 {
     internal class UISpriteDrawUtility
     {

@@ -1,25 +1,26 @@
 ﻿using System;
 using System.Collections;
-using HereBeElements.Templates;
 using HereBeElements.Internal;
 using HereBeElements.Shaders;
+using HereBeElements.Templates;
 using UnityEngine;
 using UnityEngine.EventSystems;
-using UnityEngine.UI;
 
-namespace HereBeElements
+namespace HereBeElements.World
 {
-
-    [Serializable]
-    [RequireComponent(typeof(ShaderControl))]
-    [RequireComponent(typeof(CanvasRenderer))]
-    public class UIElement : UISelectable, IPointerClickHandler, IElement
+    public class Element3D: InGameSelectable, IElement
     {
-        protected ShaderControl _sc;
-        protected Graphic _graphic;
-        protected bool _isHighlight = false;
-        protected bool _isVisible = true;
-        protected RectTransform _transform;
+        private bool _isVisible = true;
+        private bool _isHighlight = false;
+        protected Renderer _renderer;
+        protected Transform _transform;
+
+        protected override void Awake()
+        {
+            base.Awake();
+            _renderer = GetComponent<Renderer>();
+            _transform = transform;
+        }
 
         public bool IsVisible()
         {
@@ -28,7 +29,6 @@ namespace HereBeElements
 
         public virtual void Show(bool onOff = true)
         {
-            if (onOff == _isVisible) return;
             if (_sc != null)
                 _sc.Opacity = onOff ? 1 : 0;
             _isVisible = onOff;
@@ -39,15 +39,15 @@ namespace HereBeElements
             Show(false);
         }
 
-        public virtual bool IsEnabled()
+        public bool IsEnabled()
         {
-            return IsInteractable();
+            return this.IsInteractable();
         }
 
         public virtual void Enable(bool onOff = true)
         {
-            if (IsEnabled() == onOff) return;
-            this.interactable = onOff;
+            if (onOff != IsInteractable())
+                interactable = onOff;
         }
 
         public virtual void Disable()
@@ -57,7 +57,7 @@ namespace HereBeElements
 
         public bool IsHighlight()
         {
-            return base.IsHighlighted() || _isHighlight;
+            return _isHighlight;
         }
 
         public virtual void Highlight(bool onOff = true)
@@ -88,15 +88,6 @@ namespace HereBeElements
         {
             Highlight(false);
         }
-
-        protected override void Awake()
-        {
-            base.Awake();
-            _sc = GetComponent<ShaderControl>();
-            _graphic = GetComponent<Graphic>();
-            _transform = GetComponent<RectTransform>();
-        }
-
 #if UNITY_EDITOR
         protected override void OnValidate()
         {
@@ -107,22 +98,22 @@ namespace HereBeElements
                 ApplyShaderConfig();
         }
 #endif
+
         public void ApplyShaderConfig()
         {
             _sc.ApplyConfig();
         }
 
-        public Graphic GetGraphic()
+        public Renderer GetGraphic()
         {
-            if (_graphic == null)
-                _graphic = GetComponent<Graphic>();
-            return _graphic;
+            if (_renderer == null)
+                _renderer = GetComponent<SpriteRenderer>();
+            return _renderer;
         }
-
 
         public delegate void EnableEventHandler();
 
-        public EnableEventHandler EnableEvent;
+        public event EnableEventHandler EnableEvent;
 
         protected override void OnEnable()
         {
@@ -137,7 +128,7 @@ namespace HereBeElements
 
         public delegate void DisableEventHandler();
 
-        public DisableEventHandler DisableEvent;
+        public event DisableEventHandler DisableEvent;
 
         protected override void OnDisable()
         {
@@ -152,15 +143,15 @@ namespace HereBeElements
 
         public delegate void HighlightEventHandler();
 
-        public HighlightEventHandler HighlightEvent;
+        public event HighlightEventHandler HighlightEvent;
 
         public delegate void DeHighlightEventHandler();
 
-        public DeHighlightEventHandler DeHighlightEvent;
+        public event DeHighlightEventHandler DeHighlightEvent;
 
         public delegate void SelectEventHandler();
 
-        public SelectEventHandler SelectEvent;
+        public event SelectEventHandler SelectEvent;
 
         public override void OnSelect(BaseEventData eventData)
         {
@@ -200,14 +191,11 @@ namespace HereBeElements
 
         public event ClickEventHandler ClickEvent;
 
-        public virtual void OnPointerClick(PointerEventData eventData)
+        protected virtual void OnPointerClick(PointerEventData eventData)
         {
             if (eventData.button != PointerEventData.InputButton.Left)
                 return;
 
-            if (!IsInteractable())
-                return;
-            
             ClickEventHandler click = ClickEvent;
             if (click != null)
             {
@@ -238,7 +226,7 @@ namespace HereBeElements
             }
         }
 
-        public IEnumerator MoveTo(Vector3 destination, Action callback = null, float duration = 1.5f, Action<float> progress = null)
+        public virtual IEnumerator MoveTo(Vector3 destination, Action callback = null, float duration = 1.5f, Action<float> progress = null)
         {
             if (_transform == null)
                 yield break;
@@ -260,7 +248,5 @@ namespace HereBeElements
             if (callback != null)
                 callback.Invoke();
         }
-        
-        
     }
 }

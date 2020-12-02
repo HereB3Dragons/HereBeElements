@@ -1,8 +1,8 @@
-﻿using HereBeElements;
+﻿using HereBeElements.UI;
 using UnityEditor;
 using UnityEditor.AnimatedValues;
 
-namespace com.herebedragons.herebeelements.Editor
+namespace HereBeElements.Editor
 {
     [CanEditMultipleObjects]
     [CustomEditor(typeof(UIInputField))]

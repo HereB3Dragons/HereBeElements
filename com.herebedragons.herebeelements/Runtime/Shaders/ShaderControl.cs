@@ -1,5 +1,6 @@
 ﻿using System;
 using HereBeElements.Templates;
+using HereBeElements.UI;
 using UnityEngine;
 
 namespace HereBeElements.Shaders

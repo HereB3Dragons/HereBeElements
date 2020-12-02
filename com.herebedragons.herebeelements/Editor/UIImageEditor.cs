@@ -1,12 +1,11 @@
 ﻿using System.Linq;
-using HereBeElements;
-using Internal;
+using HereBeElements.UI;
 using UnityEditor;
 using UnityEditor.AnimatedValues;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace com.herebedragons.herebeelements.Editor
+namespace HereBeElements.Editor
 {
     [CustomEditor(typeof(UIImage), true)]
     [CanEditMultipleObjects]

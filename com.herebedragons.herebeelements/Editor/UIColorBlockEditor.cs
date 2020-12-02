@@ -2,7 +2,7 @@
 using UnityEditor;
 using UnityEditor.UI;
 
-namespace com.herebedragons.herebeelements.Editor
+namespace HereBeElements.Editor
 {
     [CustomPropertyDrawer(typeof(UIColorBlock), true)]
     public class UIColorBlockEditor: ColorBlockDrawer

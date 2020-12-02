@@ -1,15 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using System.Text;
 using HereBeElements.Internal;
 using UnityEditor;
 using UnityEditor.AnimatedValues;
-using UnityEditor.UI;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace com.herebedragons.herebeelements.Editor
+namespace HereBeElements.Editor
 {
     [CustomEditor(typeof(UISelectable), true)]
     public class UISelectableEditor: UnityEditor.Editor {

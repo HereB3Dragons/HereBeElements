@@ -1,7 +1,7 @@
 ﻿using System;
 using HereBeElements.Internal;
 
-namespace HereBeElements
+namespace HereBeElements.World
 {
     public class ElementGroup: Element
     {

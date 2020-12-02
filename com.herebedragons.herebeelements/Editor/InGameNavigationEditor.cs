@@ -1,10 +1,9 @@
 ﻿using HereBeElements.Internal;
-using Internal;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace com.herebedragons.herebeelements.Editor
+namespace HereBeElements.Editor
 {    
     [CustomPropertyDrawer(typeof(InGameNavigation), true)]
     public class InGameNavigationEditor: PropertyDrawer

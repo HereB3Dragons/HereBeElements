@@ -1,7 +1,7 @@
 ﻿using System;
 using HereBeElements.Locale;
 
-namespace HereBeElements
+namespace HereBeElements.UI
 {
     [Serializable]
     public class LocalizedUIDisplay<T> : UIDisplay where T : Enum
@@ -41,11 +41,12 @@ namespace HereBeElements
         {
             base.OnValidate();
         }
-#endif
+
         protected override void OnDisable()
         {
             base.OnDisable();
             Locale<T>.ChangeLanguageEvent -= Clear; 
         }
+#endif
     }
 }

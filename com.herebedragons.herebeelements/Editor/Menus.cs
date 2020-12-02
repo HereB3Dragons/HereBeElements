@@ -1,13 +1,12 @@
 ﻿using System;
-using HereBeElements;
 using HereBeElements.Materials;
-using HereBeElements.Templates;
+using HereBeElements.UI;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
 using Object = UnityEngine.Object;
 
-namespace com.herebedragons.herebeelements.Editor
+namespace HereBeElements.Editor
 {
     public class Menus
     {
