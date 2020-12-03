@@ -199,6 +199,8 @@ namespace HereBeElements
         {
             if (eventData.button != PointerEventData.InputButton.Left)
                 return;
+            if (!IsInteractable())
+                return;
 
             ClickEventHandler click = ClickEvent;
             if (click != null)
@@ -211,6 +213,8 @@ namespace HereBeElements
         public override void OnPointerEnter(PointerEventData eventData)
         {
             base.OnPointerEnter(eventData);
+            if (!IsInteractable())
+                return;
             MouseEnterEventHandler mouseEnter = MouseEnterEvent;
             if (mouseEnter != null)
             {
@@ -222,6 +226,8 @@ namespace HereBeElements
         public override void OnPointerExit(PointerEventData eventData)
         {
             base.OnPointerExit(eventData);
+            if (!IsInteractable())
+                return;
             MouseLeaveEventHandler mouseLeave = MouseLeaveEvent;
             if (mouseLeave != null)
             {

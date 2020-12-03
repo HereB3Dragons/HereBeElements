@@ -219,6 +219,8 @@ namespace HereBeElements.UI
         public override void OnPointerEnter(PointerEventData eventData)
         {
             base.OnPointerEnter(eventData);
+            if (!IsInteractable())
+                return;
             MouseEnterEventHandler mouseEnter = MouseEnterEvent;
             if (mouseEnter != null)
             {
@@ -230,6 +232,8 @@ namespace HereBeElements.UI
         public override void OnPointerExit(PointerEventData eventData)
         {
             base.OnPointerExit(eventData);
+            if (!IsInteractable())
+                return;
             MouseLeaveEventHandler mouseLeave = MouseLeaveEvent;
             if (mouseLeave != null)
             {
