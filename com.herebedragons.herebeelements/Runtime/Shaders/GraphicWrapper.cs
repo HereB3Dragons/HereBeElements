@@ -20,7 +20,7 @@ namespace HereBeElements.Shaders
 
         public bool CreateNewMaterialInstance()
         {
-            if (_graphic.material == null)
+            if (_graphic == null || _graphic.material == null)
                 return false;
             try
             {
@@ -54,7 +54,12 @@ namespace HereBeElements.Shaders
 
         public void SetAlpha(float value)
         {
-            _r.SetAlpha(value);
+            if (_graphic != null)
+            {
+                Color c = _graphic.color;
+                c.a = value * 255;
+                _graphic.color = c;
+            }
         }
     }
 }

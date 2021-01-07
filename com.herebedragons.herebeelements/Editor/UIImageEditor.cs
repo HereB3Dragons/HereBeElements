@@ -7,7 +7,7 @@ using UnityEngine.UI;
 
 namespace HereBeElements.Editor
 {
-    [CustomEditor(typeof(UIImage), true)]
+    //[CustomEditor(typeof(UIImage), true)]
     [CanEditMultipleObjects]
     public class UIImageEditor : UIGraphicEditor 
     {

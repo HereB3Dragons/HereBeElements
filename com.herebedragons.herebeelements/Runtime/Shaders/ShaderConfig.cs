@@ -65,14 +65,14 @@ namespace HereBeElements.Shaders
                 SetAlpha(renderer, opacity);
                 
                 // general
-                //SetFloat(renderer,Opacity, opacity);
-                //SetFloat(renderer,AlphaClip, alphaClipThreshold);
+                SetFloat(renderer,Opacity, opacity);
+                SetFloat(renderer,AlphaClip, alphaClipThreshold);
                 SetColor(renderer,TintColor, tintColor);
 
                 // Bor
-                // SetBool(renderer,Border, border);
-                // SetFloat(renderer,BorderWidth, borderWidth);
-                // SetColor(renderer,BorderColor, borderColor);
+                SetBool(renderer,Border, border);
+                SetFloat(renderer,BorderWidth, borderWidth);
+                SetColor(renderer,BorderColor, borderColor);
                 return true;
             }
             catch (Exception e)
