@@ -3,6 +3,9 @@ using System.Collections;
 using HereBeElements.Internal;
 using HereBeElements.Shaders;
 using HereBeElements.Templates;
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.UI;
@@ -31,12 +34,14 @@ namespace HereBeElements.UI
         {
             base.Awake();
             _sc = GetComponent<ShaderControl>();
-            if (imageAssetReference != null)
-                LoadContent<Material>(imageAssetReference, res => this.material = res);
+            // if (imageAssetReference != null)
+            //     LoadContent<Material>(imageAssetReference, UpdateMaterial);
         }
 
         public override void CrossFadeColor(Color targetColor, float duration, bool ignoreTimeScale, bool useAlpha, bool useRGB)
         {
+            //if (EditorApplication.isPlayingOrWillChangePlaymode) return;
+            
             if (_sc == null || (!useRGB && !useAlpha))
                 return;
 

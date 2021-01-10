@@ -1,6 +1,9 @@
 ﻿using System;
 using HereBeElements.Internal;
 using HereBeElements.Templates;
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -51,6 +54,7 @@ namespace HereBeElements.UI
         protected override void OnValidate()
         {
             base.OnValidate();
+            if (EditorApplication.isPlayingOrWillChangePlaymode) return;
             if (_text != null)
                 Show(text);
         }

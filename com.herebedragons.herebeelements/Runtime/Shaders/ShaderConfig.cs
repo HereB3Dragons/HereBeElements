@@ -62,12 +62,12 @@ namespace HereBeElements.Shaders
             {
                 if (isStatic || renderer == null) return false;
                 
-                SetAlpha(renderer, opacity);
-                
                 // general
                 SetFloat(renderer,Opacity, opacity);
                 SetFloat(renderer,AlphaClip, alphaClipThreshold);
                 SetColor(renderer,TintColor, tintColor);
+                
+                SetAlpha(renderer, opacity);
 
                 // Bor
                 SetBool(renderer,Border, border);
@@ -104,7 +104,8 @@ namespace HereBeElements.Shaders
             {
                 try
                 {
-                    renderer.SetColor(key, new Color(color.r, color.g, color.b, color.a * opacity));
+                    renderer.SetColor(key, color);
+                    //renderer.SetColor(key, new Color(color.r, color.g, color.b, color.a * opacity));
                     _cachedValues[key] = color;
                 }
                 catch (Exception e)

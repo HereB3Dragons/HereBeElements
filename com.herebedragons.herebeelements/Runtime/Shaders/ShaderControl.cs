@@ -1,6 +1,9 @@
 ﻿using System;
 using HereBeElements.Templates;
 using HereBeElements.UI;
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 using UnityEngine;
 
 namespace HereBeElements.Shaders
@@ -97,6 +100,7 @@ namespace HereBeElements.Shaders
 #if UNITY_EDITOR
         private void OnValidate()
         {
+            //if (EditorApplication.isPlayingOrWillChangePlaymode) return;
             Init();
             if (_owner == null)
                 return;

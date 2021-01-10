@@ -3,6 +3,9 @@ using System.Collections;
 using HereBeElements.Templates;
 using HereBeElements.Internal;
 using HereBeElements.Shaders;
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -95,6 +98,7 @@ namespace HereBeElements
 #if UNITY_EDITOR
         protected override void OnValidate()
         {
+            if (EditorApplication.isPlayingOrWillChangePlaymode) return;
             if (_sc == null)
                 _sc = GetComponent<ShaderControl>();
             base.OnValidate();

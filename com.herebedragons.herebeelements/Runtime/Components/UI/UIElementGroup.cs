@@ -17,6 +17,14 @@ namespace HereBeElements.UI
             _cg = GetComponent<CanvasGroup>();
         }
 
+        protected override void Start()
+        {
+            base.Start();
+            // cant figure out why i need this but still.... solves the enable initialization bug
+            Enable(!this.IsEnabled());
+            Enable(!this.IsEnabled());
+        }
+
         public override void Show(bool onOff = true)
         {
             float a = onOff ? 1 : 0;

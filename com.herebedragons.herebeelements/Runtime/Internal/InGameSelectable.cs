@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections;
 using HereBeElements.Shaders;
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.EventSystems;
@@ -204,6 +207,7 @@ namespace HereBeElements.Internal
         protected virtual void OnValidate()
         {
             //base.OnValidate();
+            if (EditorApplication.isPlayingOrWillChangePlaymode) return;
             if (_sc == null)
                 _sc = GetComponent<ShaderControl>();
             m_Colors.fadeDuration = Mathf.Max(m_Colors.fadeDuration, 0.0f);

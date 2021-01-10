@@ -12,10 +12,15 @@ namespace HereBeElements.Shaders
 
         [SerializeField] private CanvasRenderer _r;
 
+        private Color _color = Color.white;
+
         public CanvasRendererWrapper(Graphic g, CanvasRenderer r)
         {
             _graphic = g;
+            if (g != null && g.material != null)
+                _color = g.material.color;
             _r = r;
+            //_r.SetColor(Color.white);
         }
 
         public bool CreateNewMaterialInstance()
@@ -43,7 +48,10 @@ namespace HereBeElements.Shaders
         public void SetColor(int key, Color color)
         {
             if (_graphic != null)
+            {
                 _graphic.color = color;
+                _color = color;
+            }
         }
 
         public void SetFloat(int key, float value)
@@ -56,8 +64,8 @@ namespace HereBeElements.Shaders
         {
             if (_graphic != null)
             {
-                Color c = _graphic.color;
-                c.a = value * 255;
+                Color c = _color;
+                c.a = value * c.a;
                 _graphic.color = c;
             }
         }
