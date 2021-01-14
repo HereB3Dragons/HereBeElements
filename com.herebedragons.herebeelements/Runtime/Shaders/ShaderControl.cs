@@ -44,7 +44,6 @@ namespace HereBeElements.Shaders
             set
             {
                 config.opacity = value;
-                
                 config.SetAlpha(_renderer, value);
             }
         }
