@@ -105,8 +105,8 @@ namespace HereBeElements.UI
 #if UNITY_EDITOR
         protected override void OnValidate()
         {
-            // if (EditorApplication.isPlayingOrWillChangePlaymode)
-            //     return;
+            if (EditorApplication.isPlayingOrWillChangePlaymode)
+                return;
             if (_sc == null)
                 _sc = GetComponent<ShaderControl>();
             base.OnValidate();
