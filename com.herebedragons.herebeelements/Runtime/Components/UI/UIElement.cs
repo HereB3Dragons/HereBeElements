@@ -100,6 +100,16 @@ namespace HereBeElements.UI
             _sc = GetComponent<ShaderControl>();
             _graphic = GetComponent<Graphic>();
             _transform = GetComponent<RectTransform>();
+            Subscribe();
+        }
+    
+        /// <summary>
+        /// Method to be used to subscribe to events/delegates
+        /// By using this its behaviour (subscribing/unsubscribing will be properly handled)
+        /// </summary>
+        /// <param name="onOff"></param>
+        protected virtual void Subscribe(bool onOff = true)
+        {
         }
 
 #if UNITY_EDITOR
@@ -114,6 +124,12 @@ namespace HereBeElements.UI
                 ApplyShaderConfig();
         }
 #endif
+        protected override void OnDestroy()
+        {
+            base.OnDestroy();
+            Subscribe(false);
+        }
+
         public void ApplyShaderConfig()
         {
             _sc.ApplyConfig();
@@ -149,6 +165,9 @@ namespace HereBeElements.UI
         protected override void OnDisable()
         {
             base.OnDisable();
+#if UNITY_EDITOR
+            Subscribe(false);
+#endif
             DisableEventHandler disable = DisableEvent;
             if (disable != null)
             {

@@ -91,6 +91,16 @@ namespace HereBeElements.World
         {
             Highlight(false);
         }
+        
+        /// <summary>
+        /// Method to be used to subscribe to events/delegates
+        /// By using this its behaviour (subscribing/unsubscribing will be properly handled)
+        /// </summary>
+        /// <param name="onOff"></param>
+        protected virtual void Subscribe(bool onOff = true)
+        {
+        }
+        
 #if UNITY_EDITOR
         protected override void OnValidate()
         {
@@ -137,6 +147,9 @@ namespace HereBeElements.World
         protected override void OnDisable()
         {
             base.OnDisable();
+#if UNITY_EDITOR
+            Subscribe(false);
+#endif
             DisableEventHandler disable = DisableEvent;
             if (disable != null)
             {

@@ -99,13 +99,13 @@ namespace HereBeElements.Shaders
 #if UNITY_EDITOR
         private void OnValidate()
         {
-            //if (EditorApplication.isPlayingOrWillChangePlaymode) return;
+            // if (EditorApplication.isPlayingOrWillChangePlaymode) return;
             Init();
             if (_owner == null)
                 return;
-
             config.isStatic = isStatic;
-            config.ApplyConfig(_renderer);
+            if (_owner.GetType() != typeof(UIElementGroup))
+                config.ApplyConfig(_renderer);
         }
 #endif
 

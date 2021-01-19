@@ -12,7 +12,7 @@ namespace HereBeElements.UI
 
         protected LocalizedUIDisplay()
         {
-            Locale<T>.ChangeLanguageEvent += Clear;
+            //Locale<T>.ChangeLanguageEvent += Clear;
         }
 
         public override void Show(string text = null)
@@ -35,18 +35,18 @@ namespace HereBeElements.UI
             base.Awake();
             Show();
         }
-
-#if UNITY_EDITOR
-        protected override void OnValidate()
+        
+        protected override void Subscribe(bool onOff = true)
         {
-            base.OnValidate();
+            base.Subscribe(onOff);
+            if (onOff)
+            {
+                Locale<T>.ChangeLanguageEvent += Clear;
+            }
+            else
+            {
+                Locale<T>.ChangeLanguageEvent -= Clear;
+            }
         }
-
-        protected override void OnDisable()
-        {
-            base.OnDisable();
-            Locale<T>.ChangeLanguageEvent -= Clear; 
-        }
-#endif
     }
 }
