@@ -11,10 +11,17 @@ namespace HereBeElements.Animations
         private bool _isAnimating = false;
         private T _transform;
 
-        private void Awake()
+        protected virtual void Awake()
         {
             _transform = transform as T;
         }
+
+        protected virtual void Start()
+        {
+            BackupOriginal();
+        }
+
+        protected abstract void BackupOriginal(bool revert = false);
 
         protected T GetTransform()
         {
@@ -65,6 +72,11 @@ namespace HereBeElements.Animations
         public virtual void SetAnimating(bool value)
         {
             _isAnimating = value;
+        }
+
+        protected virtual void OnDestroy()
+        {
+            BackupOriginal(true);
         }
     }
 }

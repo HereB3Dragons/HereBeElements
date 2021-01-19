@@ -12,11 +12,25 @@ namespace HereBeElements.Animations
 
         private Vector3 _origin, _destination;
 
+        private Vector3 _backup;
+
         public override void Toggle(Action callback = null)
         {
             _origin = GetTransform().localPosition;
             _destination = GetDestinationPosition(direction);
             base.Toggle(callback);
+        }
+
+        protected override void BackupOriginal(bool revert = false)
+        {
+            if (revert)
+            {
+                GetTransform().localPosition = _backup;
+            }
+            else
+            {
+                _backup = GetTransform().localPosition;
+            }
         }
 
         protected override void Animate(float progress)
