@@ -51,9 +51,9 @@ namespace HereBeElements
             return this.IsInteractable();
         }
 
-        public virtual void Enable(bool onOff = true)
+        public virtual void Enable(bool onOff = true, bool force = false)
         {
-            if (onOff != IsInteractable())
+            if (force || onOff != IsInteractable())
                 interactable = onOff;
         }
 

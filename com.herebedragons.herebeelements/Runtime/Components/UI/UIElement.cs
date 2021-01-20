@@ -49,9 +49,9 @@ namespace HereBeElements.UI
             return IsInteractable();
         }
 
-        public virtual void Enable(bool onOff = true)
+        public virtual void Enable(bool onOff = true, bool force = false)
         {
-            if (IsEnabled() == onOff) return;
+            if (!force && IsEnabled() == onOff) return;
             this.interactable = onOff;
         }
 

@@ -19,7 +19,7 @@ namespace HereBeElements.World
             base.Show(onOff);
         }
 
-        public override void Enable(bool onOff = true)
+        public override void Enable(bool onOff = true, bool force = false)
         {
             InvokeAll(el => el.Show(onOff));
             base.Show(onOff);

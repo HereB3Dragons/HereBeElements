@@ -4,7 +4,7 @@
     {
         bool IsEnabled();
         
-        void Enable(bool onOff = true);
+        void Enable(bool onOff = true, bool force = false);
 
         void Disable();
     }

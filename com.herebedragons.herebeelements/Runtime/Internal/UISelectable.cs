@@ -152,6 +152,8 @@ namespace HereBeElements.Internal
         {
             Utils.LoadAsset(assetRef, setter);
         }
+        
+        
 
         protected override void OnDisable()
         {

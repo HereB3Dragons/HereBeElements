@@ -15,7 +15,7 @@ namespace HereBeElements.Shaders
         public bool isStatic = true;
         
         [SerializeField]
-        public ShaderConfig config = new ShaderConfig();
+        public ShaderConfig config;
         
         private IElement _owner;
         

@@ -411,7 +411,7 @@ namespace HereBeElements.UI
             eventData.useDragThreshold = false;
         }
 
-        public override void Enable(bool onOff)
+        public override void Enable(bool onOff, bool force = false)
         {
             UpdateVisuals();
             base.Enable(onOff);

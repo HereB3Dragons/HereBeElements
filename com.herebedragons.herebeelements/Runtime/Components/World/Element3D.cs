@@ -47,7 +47,7 @@ namespace HereBeElements.World
             return this.IsInteractable();
         }
 
-        public virtual void Enable(bool onOff = true)
+        public virtual void Enable(bool onOff = true, bool force = false)
         {
             if (onOff != IsInteractable())
                 interactable = onOff;

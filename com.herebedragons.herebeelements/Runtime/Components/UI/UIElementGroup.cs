@@ -29,7 +29,7 @@ namespace HereBeElements.UI
             return GetCanvas().interactable;
         }
 
-        public override void Enable(bool onOff = true)
+        public override void Enable(bool onOff = true, bool force = false)
         {
             if (GetCanvas().interactable != onOff)
                 GetCanvas().interactable = onOff;
