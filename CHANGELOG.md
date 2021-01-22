@@ -19,7 +19,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Deprecated
 
-## [1.0.0] - 2020/10/10
+## [0.x.x] - xxxx/xx/xx
+### Added
+- Event System (clone of Unity's);
+- Camera Crop
+
+## [0.2.2] - 2021/22/01
+### Added
+- Functional Element & UIElement Classes;
+- Functional Shaders for UI and World Elements;
+- Maskable version of the UI Shader;  
+- UIGroup Elements Added
+- Animations;
+- Sound Management;
+- Scene loading;
+- Various UI Elements (Buttons, sliders, tables);
+- Full Locale Support;
+
+## [0.1.0] - 2020/10/10
 ### Added
 - Functional UIElement class;
 - Custom editors for new Classes
