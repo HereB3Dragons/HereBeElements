@@ -1,8 +1,7 @@
 ﻿using System;
 using UnityEngine;
-using UnityEngine.EventSystems;
 
-namespace HereBeElements
+namespace HereBeElements.Events
 {
     public class EventSystemCollector: MonoBehaviour
     {
