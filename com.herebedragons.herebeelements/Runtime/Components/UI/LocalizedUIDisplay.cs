@@ -9,17 +9,20 @@ namespace HereBeElements.UI
         public bool isLocalized;
         public T[] textKeys;
         public string separator = ":";
-
-        protected LocalizedUIDisplay()
-        {
-            //Locale<T>.ChangeLanguageEvent += Clear;
-        }
-
+      
         public override void Show(string text = null)
         {
             if (isLocalized && textKeys.Length > 0)
                 text = Locale<T>.GetText(textKeys[0]);
             base.Show(text + separator);
+        }
+
+        public void UpdateKey(T newKey, int index = 0)
+        {
+            if (index >= textKeys.Length)
+                throw new ArgumentException("No matching key available to update");
+            textKeys[index] = newKey;
+            Show();
         }
 
         public override void Show(long value)

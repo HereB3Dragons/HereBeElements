@@ -84,7 +84,7 @@ namespace HereBeElements.Locale
 
         public static string GetText(T key, params string[] replacements)
         {
-            if (replacements.Length != 0)
+            if (replacements != null && replacements.Length != 0)
                 return String.Format(GetOrUndefined(key.ToString()), replacements);
             return GetOrUndefined(key.ToString());
         }

@@ -413,6 +413,13 @@ namespace HereBeElements.UI
             }
         }
 
+        protected override void Start()
+        {
+            base.Start();
+            Enable(!IsEnabled(), true);
+            Enable(!IsEnabled(), true);
+        }
+
         /// <summary>
         /// Set the current text value of the Input field without invoking onValueChanged.
         /// </summary>

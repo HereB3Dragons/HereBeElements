@@ -63,6 +63,7 @@ namespace HereBeElements.Editor
 
         public override void OnInspectorGUI()
         {
+            base.OnInspectorGUI();
             serializedObject.Update();
 
             EditorGUILayout.Space();
@@ -72,10 +73,10 @@ namespace HereBeElements.Editor
             if (m_TextComponent != null && m_TextComponent.objectReferenceValue != null)
             {
                 UIText text = m_TextComponent.objectReferenceValue as UIText;
-                if (text.supportRichText)
-                {
-                    EditorGUILayout.HelpBox("Using Rich Text with input is unsupported.", MessageType.Warning);
-                }
+                // if (text.supportRichText)
+                // {
+                //     EditorGUILayout.HelpBox("Using Rich Text with input is unsupported.", MessageType.Warning);
+                // }
             }
 
             using (new EditorGUI.DisabledScope(m_TextComponent == null || m_TextComponent.objectReferenceValue == null))
