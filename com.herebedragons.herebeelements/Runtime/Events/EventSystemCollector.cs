@@ -16,10 +16,10 @@ namespace HereBeElements.Events
 
         private void Awake()
         {
-            eventSystem = GetComponent<EventSystem>();
+            eventSystem = GetComponent<UnityEngine.EventSystems.EventSystem>();
         }
 
-        private EventSystem eventSystem;
+        private UnityEngine.EventSystems.EventSystem eventSystem;
  
         private GameObject m_LastSelectedGameObject;
  
